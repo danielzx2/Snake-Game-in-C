@@ -1,6 +1,8 @@
 #include <pic32mx.h>
 #include <stdint.h>
 
+
+
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
 #define DISPLAY_COMMAND_DATA PORTFbits.RF4
@@ -15,6 +17,22 @@
 #define DISPLAY_COMMAND_DATA_MASK 0x10
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
+
+volatile int* trise = (volatile int*) 0xbf886100;
+
+int getsw(void)
+{
+    int sw = 0x0;
+    sw = (PORTD >> 8) & 0x0f;
+    return sw; 
+}
+
+int getbtns(void)
+{
+    int btn = 0x0;
+    btn = (PORTD >> 5) & 0x07;
+    return btn;
+}
 
 
 char textbuffer[4][16];
@@ -174,6 +192,7 @@ void delay(int cyc) {
 	for(i = cyc; i > 0; i--);
 }
 
+
 uint8_t spi_send_recv(uint8_t data) {
 	while(!(SPI2STAT & 0x08));
 	SPI2BUF = data;
@@ -210,19 +229,7 @@ void display_init() {
 
 	spi_send_recv(0xAF);
 
-	int getsw(void)
-	{
-    int sw = 0x0;
-    sw = (PORTD >> 8) & 0x0f;
-    return sw;
-	}
-
-	int getbtns(void)
-	{
-    int btn = 0x0;
-    btn = (PORTD >> 5) & 0x07;
-    return btn;
-	}
+	TRISDSET = TRISDSET | 0x0FE0;
 
 }
 
@@ -259,7 +266,6 @@ void display_image(int x, const uint8_t *data) {
 	}
 }
 
-//GÖR OM - ska rita ut hela planhalvan
 void display_update() {
 	int i, j, k;
 	int c;
@@ -284,59 +290,72 @@ void display_update() {
 	}
 }
 
-	int main(void) {
 
-		/* Set up peripheral bus clock */ //PLL output dividerat med 8??
-		OSCCON &= ~0x180000;
-		OSCCON |= 0x080000;
+int main(void) {
+	/* Set up peripheral bus clock */ //PLL output dividerat med 8??
+	OSCCON &= ~0x180000;
+	OSCCON |= 0x080000;
 
-		/* Set up output pins */
-		AD1PCFG = 0xFFFF;   //AD1PC kontrollerar analoga port pins (sätts till digitalt) HELP
-		ODCE = 0x0;					//Configurerar om den specifika I/O pin ska agera normalt som digital output eller som en "open-drain" HELP
-		TRISECLR = 0xFF;		//OM TRIS-E rensas så kommer outpit nivån att konverteras av en analog enhet
-		PORTE = 0x0;				//alla pins i PORT-E sätts till output och ? alla pins (konfgurerade som analoga inputs) rensas ? HELP
+	/* Set up output pins */
+	AD1PCFG = 0xFFFF;   //AD1PC kontrollerar analoga port pins (sätts till digitalt) HELP
+	ODCE = 0x0;					//Configurerar om den specifika I/O pin ska agera normalt som digital output eller som en "open-drain" HELP
+	TRISECLR = 0xFF;		//OM TRIS-E rensas så kommer outpit nivån att konverteras av en analog enhet
+	PORTE = 0x0;				//alla pins i PORT-E sätts till output och ? alla pins (konfgurerade som analoga inputs) rensas ? HELP
 
-		//extra
-
-
-		/* Output pins for display signals */
-
-		PORTF = 0xFFFF;			//Sätter alla pins i PORT-F till att ta emot data
-		PORTG = (1 << 9);		//bit 9 ska skriva ut data
-		ODCF = 0x0;					//liknar ODCE
-		ODCG = 0x0;					//liknar ODCE
-		TRISFCLR = 0x70;		//bit 6-4 sätts till outputs i Port-F
-		TRISGCLR = 0x200;		//bit 9 sätts till output i port-g
-
-		/* Set up input pins */
-		TRISDSET = (1 << 8);	//bit 8 i tris-d blir en input
-		TRISFSET = (1 << 1);	//bit 1 i tris-fblir en input
-
-		/* Set up SPI as master */
-		SPI2CON = 0;					//Alla bits i spi2 = 0
-		SPI2BRG = 4;					//Baud rate = 4 (Ska dividera SCK)
-
-		/* Clear SPIROV*/
-		SPI2STATCLR &= ~0x40;	//Ny data har tagits emot men slängs bort, programmer har ej läst förra datan (liknar IFS(0) )
-		/* Set CKP = 1, MSTEN = 1; */
-	  SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising edge
-
-		/* Turn on SPI */
-		SPI2CONSET = 0x8000;
-
-		display_init();
+	//extra
+	*trise = *trise & 0xfff1;
 
 
-				display_string(0, "");
-				display_string(1, "PRESS");
-				display_string(2, "BUTTON");
-				display_string(3, "");
-				display_update();
-				display_image(23, icon);
+	/* Output pins for display signals */
 
+	PORTF = 0xFFFF;			//Sätter alla pins i PORT-F till att ta emot data
+	PORTG = (1 << 9);		//bit 9 ska skriva ut data
+	ODCF = 0x0;					//liknar ODCE
+	ODCG = 0x0;					//liknar ODCE
+	TRISFCLR = 0x70;		//bit 6-4 sätts till outputs i Port-F
+	TRISGCLR = 0x200;		//bit 9 sätts till output i port-g
 
-		for(;;);
+	/* Set up input pins */
+	TRISDSET = (1 << 8);	//bit 8 i tris-d blir en input
+	TRISFSET = (1 << 1);	//bit 1 i tris-f blir en input
 
+	/* Set up SPI as master */
+	SPI2CON = 0;					//Alla bits i spi2 = 0
+	SPI2BRG = 4;					//Baud rate = 4 (Ska dividera SCK)
 
+	/* Clear SPIROV*/
+	SPI2STATCLR &= ~0x40;	//Ny data har tagits emot men slängs bort, programmer har ej läst förra datan (liknar IFS(0) )
+	/* Set CKP = 1, MSTEN = 1; */
+  SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising edge
+
+	/* Turn on SPI */
+	SPI2CONSET = 0x8000;
+
+int position = 0;
+int running = 1;
+int button = getbtns();
+
+	display_init();
+	display_string(0, "");
+	display_string(1, "					PRESS");
+	display_string(2, "					ANY");
+	display_string(3, "         BUTTON");
+	display_update();
+  display_image(position, icon);
+	
+	if (button != 0)
+	{
+	display_init();
+	display_string(0, "");
+	display_string(1, "					YOU");
+	display_string(2, "					PRESSED");
+	display_string(3, "     BUTTON ");
+	display_update();
+  display_image(position, icon);
+	}
+	
+  
+
+	for(;;) ;
 	return 0;
 }
