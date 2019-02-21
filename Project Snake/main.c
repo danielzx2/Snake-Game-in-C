@@ -192,6 +192,11 @@ const uint8_t const player[] = {
 	122, 123, 147, 176, 190, 237, 239, 250
 };
 
+const uint8_t const test[] = 
+{
+	0,
+};
+
 void delay(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
@@ -358,8 +363,7 @@ while(1)
 	display_string(1, "			YOU");
 	display_string(2, "			PRESSED");
 	display_string(3, "     BUTTON ");
-  display_image(position, player);
-	display_image((position + 96), icon);
+  display_image(position, test);
 	}
 	
 	while(getbtns() == 0)
@@ -369,8 +373,7 @@ while(1)
 	display_string(2, "					ANY");
 	display_string(3, "     BUTTON");
 	display_update();
-  display_image(position, player);
-	display_image((position + 96), icon);
+  display_image(position, test);
 	}
 
 	while(getbtns() == 4)
@@ -380,8 +383,7 @@ while(1)
 	display_string(1, "					YOU");
 	display_string(2, "					PRESSED");
 	display_string(3, "     BUTTON ");
-  display_image(position, player);
-	display_image((position + 96), icon);
+  display_image(position, test);
 	}
 
 }  
