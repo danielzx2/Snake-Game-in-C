@@ -1,0 +1,20 @@
+PROJECT SNAKE
+Made by Abyel Tesfay & Daniel Nyeko Moini
+
+The following template was used to simplify the project
+All C and Assembly code here was made during the project
+
+
+The folder contains the following source files:
+
+main.c:
+	Contains the entry point main()
+
+vectors.S:
+	Contains the interrupt handler and the exception handler
+
+stubs.c:
+	Contains stubs for functions run during micro controller
+	initialization
+
+//lägg till kommande koder
