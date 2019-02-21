@@ -34,6 +34,13 @@ int getbtns(void)
     return btn;
 }
 
+int pressFforRespect(void)
+{
+	int F = 0x0;
+	F = (PORTF & 0x002);
+	return F;
+}
+
 
 char textbuffer[4][16];
 
@@ -240,7 +247,8 @@ void display_init() {
 	spi_send_recv(0xAF);
 
 	TRISDSET = 0x0FE0;
-	TRISFSET = 0x0002;
+	TRISFSET = 0x002;
+	
 
 }
 
@@ -348,23 +356,27 @@ int running = 1;
 int button = getbtns();
 
 display_init();
-display_string(0, "");
-	display_string(1, "					PRESS");
-	display_string(2, "					ANY");
-	display_string(3, "         BUTTON");
-	display_update();
-  display_image(position, player);
-	display_image(position + 96, icon);
+display_string(0, "-------------------");
+display_string(1, "|										    |");
+display_string(2, "|									    	|");
+display_string(3, "-------------------");
+display_update();
+display_image(position, player);
+display_image(position + 96, icon);
 
 while(1)
 {
 	while (getbtns() == 4)
 	{
 	position2--;
-	display_string(0, "");
-	display_string(1, "			YOU");
-	display_string(2, "			PRESSED");
-	display_string(3, "     BUTTON ");
+	display_update();
+  display_image(position2, icon);
+	display_image(position, player);
+	}
+
+	while (getbtns() == 2)
+	{
+	position2++;
 	display_update();
   display_image(position2, icon);
 	display_image(position, player);
@@ -372,23 +384,22 @@ while(1)
 
 	while (getbtns() == 1)
 	{
-	position++;
-	display_string(0, "");
-	display_string(1, "			YOU");
-	display_string(2, "			PRESSED");
-	display_string(3, "     BUTTON ");
+	position--;
 	display_update();
   display_image(position, player);
 	display_image(position2, icon);
 	}
 
+	while(pressFforRespect() == 2)
+	{
+	position++;
+	display_update();
+  display_image(position, player);
+	display_image(position2, icon);
+	}
+	
 	while(getbtns() == 0)
 	{
-	display_string(0, "");
-	display_string(1, "					PRESS");
-	display_string(2, "					ANY");
-	display_string(3, "     BUTTON");
-	display_update();
   display_image(position, player);
 	display_image(position2, icon);
 	}
@@ -396,11 +407,7 @@ while(1)
 	while(getbtns() == 5)
 	{
 	position++;
-	position2--;
-	display_string(0, "");
-	display_string(1, "					PRESS");
-	display_string(2, "					ANY");
-	display_string(3, "     BUTTON");
+	position2;
 	display_update();
   display_image(position, player);
 	display_image(position2, icon);
