@@ -30,7 +30,7 @@ int getsw(void)
 int getbtns(void)
 {
     int btn = 0x0;
-    btn = (PORTD >> 5) & 0x07;
+    btn =  (PORTD >> 5)  & 0x07;
     return btn;
 }
 
@@ -240,6 +240,7 @@ void display_init() {
 	spi_send_recv(0xAF);
 
 	TRISDSET = 0x0FE0;
+	TRISFSET = 0x0002;
 
 }
 
@@ -342,6 +343,7 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 
 int position = 0;
+int position2 = position + 96;
 int running = 1;
 int button = getbtns();
 
@@ -356,6 +358,18 @@ display_string(0, "");
 
 while(1)
 {
+	while (getbtns() == 4)
+	{
+	position2--;
+	display_string(0, "");
+	display_string(1, "			YOU");
+	display_string(2, "			PRESSED");
+	display_string(3, "     BUTTON ");
+	display_update();
+  display_image(position2, icon);
+	display_image(position, player);
+	}
+
 	while (getbtns() == 1)
 	{
 	position++;
@@ -363,9 +377,11 @@ while(1)
 	display_string(1, "			YOU");
 	display_string(2, "			PRESSED");
 	display_string(3, "     BUTTON ");
-  display_image(position, test);
+	display_update();
+  display_image(position, player);
+	display_image(position2, icon);
 	}
-	
+
 	while(getbtns() == 0)
 	{
 	display_string(0, "");
@@ -373,17 +389,21 @@ while(1)
 	display_string(2, "					ANY");
 	display_string(3, "     BUTTON");
 	display_update();
-  display_image(position, test);
+  display_image(position, player);
+	display_image(position2, icon);
 	}
 
-	while(getbtns() == 4)
+	while(getbtns() == 5)
 	{
-	position--;
+	position++;
+	position2--;
 	display_string(0, "");
-	display_string(1, "					YOU");
-	display_string(2, "					PRESSED");
-	display_string(3, "     BUTTON ");
-  display_image(position, test);
+	display_string(1, "					PRESS");
+	display_string(2, "					ANY");
+	display_string(3, "     BUTTON");
+	display_update();
+  display_image(position, player);
+	display_image(position2, icon);
 	}
 
 }  
