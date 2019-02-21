@@ -229,7 +229,7 @@ void display_init() {
 
 	spi_send_recv(0xAF);
 
-	TRISDSET = TRISDSET | 0x0FE0;
+	TRISDSET = 0x0FE0;
 
 }
 
