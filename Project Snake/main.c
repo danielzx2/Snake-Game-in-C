@@ -18,7 +18,6 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-volatile int* trise = (volatile int*) 0xbf886100;
 
 int getsw(void)
 {
@@ -29,7 +28,7 @@ int getsw(void)
 
 int getbtns(void)
 {
-    int btn = 0x0;
+    int btn = 0x00;
     btn =  (PORTD >> 5)  & 0x07;
     return btn;
 }
@@ -37,7 +36,7 @@ int getbtns(void)
 int pressFforRespect(void)
 {
 	int F = 0x0;
-	F = (PORTF & 0x002);
+	F = (PORTF & 0x0f);
 	return F;
 }
 
@@ -247,7 +246,8 @@ void display_init() {
 	spi_send_recv(0xAF);
 
 	TRISDSET = 0x0FE0;
-	TRISFSET = 0x002;
+	TRISFSET = 0x0f;
+
 
 
 }
@@ -321,10 +321,6 @@ int main(void) {
 	TRISECLR = 0xFF;		//OM TRIS-E rensas så kommer outpit nivån att konverteras av en analog enhet
 	PORTE = 0x0;				//alla pins i PORT-E sätts till output och ? alla pins (konfgurerade som analoga inputs) rensas ? HELP
 
-	//extra
-	*trise = *trise & 0xfff1;
-
-
 	/* Output pins for display signals */
 
 	PORTF = 0xFFFF;			//Sätter alla pins i PORT-F till att ta emot data
@@ -392,10 +388,15 @@ while(1)
 
 	while(pressFforRespect() == 2)
 	{
+    PORTE = PORTE + 1;
+
+    /*
 	position++;
 	display_update();
   display_image(position, player);
 	display_image(position2, icon);
+  */
+
 	}
 
 	while(getbtns() == 0)
