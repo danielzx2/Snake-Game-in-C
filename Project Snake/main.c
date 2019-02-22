@@ -362,7 +362,7 @@ display_string(2, "|									    	|");
 display_string(3, "-------------------");
 display_update();
 display_image(position, player);
-display_image(position + 96, icon);
+display_image(position2, icon);
 
 while(1)
 {
