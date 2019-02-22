@@ -24,7 +24,7 @@ int getsw(void)
 {
     int sw = 0x0;
     sw = (PORTD >> 8) & 0x0f;
-    return sw; 
+    return sw;
 }
 
 int getbtns(void)
@@ -195,11 +195,11 @@ const uint8_t const icon[] = {
 };
 
 const uint8_t const player[] = {
-	6, 11, 25, 44, 72, 81, 98, 102, 
+	6, 11, 25, 44, 72, 81, 98, 102,
 	122, 123, 147, 176, 190, 237, 239, 250
 };
 
-const uint8_t const test[] = 
+const uint8_t const test[] =
 {
 	0,
 };
@@ -248,7 +248,7 @@ void display_init() {
 
 	TRISDSET = 0x0FE0;
 	TRISFSET = 0x002;
-	
+
 
 }
 
@@ -397,7 +397,7 @@ while(1)
   display_image(position, player);
 	display_image(position2, icon);
 	}
-	
+
 	while(getbtns() == 0)
 	{
   display_image(position, player);
@@ -413,7 +413,7 @@ while(1)
 	display_image(position2, icon);
 	}
 
-}  
+}
 
 	for(;;) ;
 	return 0;
