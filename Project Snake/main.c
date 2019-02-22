@@ -35,9 +35,8 @@ int getbtns(void)
 
 int pressFforRespect(void)
 {
-	int F = 0x0;
-	F = (PORTF & 0x0f);
-	return F;
+	 int F = 0x0;
+   F = (PORTF >> 1) & 0x01;
 }
 
 
@@ -200,7 +199,7 @@ const uint8_t const player[] = {
 
 const uint8_t const test[] =
 {
-	0,
+	0
 };
 
 void delay(int cyc) {
@@ -246,9 +245,7 @@ void display_init() {
 	spi_send_recv(0xAF);
 
 	TRISDSET = 0x0FE0;
-	TRISFSET = 0x0f;
-
-
+  TRISFSET = 0x02;
 
 }
 
@@ -362,7 +359,7 @@ display_image(position + 96, icon);
 
 while(1)
 {
-	while (getbtns() == 4)
+	if (getbtns() == 4)
 	{
 	position2--;
 	display_update();
@@ -370,7 +367,7 @@ while(1)
 	display_image(position, player);
 	}
 
-	while (getbtns() == 2)
+	if (getbtns() == 2)
 	{
 	position2++;
 	display_update();
@@ -378,7 +375,7 @@ while(1)
 	display_image(position, player);
 	}
 
-	while (getbtns() == 1)
+	if (getbtns() == 1)
 	{
 	position--;
 	display_update();
@@ -386,26 +383,21 @@ while(1)
 	display_image(position2, icon);
 	}
 
-	while(pressFforRespect() == 2)
+	while(pressFforRespect() == 1 )
 	{
-    PORTE = PORTE + 1;
-
-    /*
 	position++;
 	display_update();
   display_image(position, player);
 	display_image(position2, icon);
-  */
-
 	}
 
-	while(getbtns() == 0)
+	if(getbtns() == 0)
 	{
   display_image(position, player);
 	display_image(position2, icon);
 	}
 
-	while(getbtns() == 5)
+	if(getbtns() == 5)
 	{
 	position++;
 	position2;
