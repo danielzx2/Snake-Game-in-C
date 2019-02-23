@@ -1,8 +1,6 @@
 #include <pic32mx.h>
 #include <stdint.h>
 
-
-
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
 #define DISPLAY_COMMAND_DATA PORTFbits.RF4
@@ -18,29 +16,25 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-
+/* Används ej än
 int getsw(void)
 {
     int sw = 0x0;
     sw = (PORTD >> 8) & 0x0f;
     return sw;
-}
+}*/
 
 int getbtns(void)
 {
     int btn = 0x00;
-    btn =  (PORTD >> 5)  & 0x07;
-    return btn;
-}
+    btn =  ((PORTD >> 4) & 0x0E) | ((PORTF >> 1) & 0x01) ;
 
-int pressFforRespect(void)
-{
-	 int F = 0x0;
-   F = (PORTF >> 1) & 0x01;
+    return btn;
 }
 
 
 char textbuffer[4][16];
+
 
 static const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -192,15 +186,16 @@ const uint8_t const icon[] = {
 	184, 69, 186, 69, 254, 80, 175, 217,
 };
 
-const uint8_t const player[] = {
+/*const uint8_t const player[] = {
 	6, 11, 25, 44, 72, 81, 98, 102,
-	122, 123, 147, 176, 190, 237, 239, 250
-};
-
-const uint8_t const test[] =
-{
-	0
-};
+	122, 123, 147, 176, 190, 237, 239, 250,
+  3, 201, 22, 225, 27, 196, 19, 24,
+	165, 74, 36, 146, 72, 162, 85, 8,
+	226, 25, 166, 80, 167, 216, 167, 88,
+	106, 149, 161, 95, 135, 91, 175, 87,
+	142, 123, 134, 127, 134, 121, 134, 121,
+	132, 59, 192, 27, 164, 74, 177, 70,
+};*/
 
 void delay(int cyc) {
 	int i;
@@ -262,6 +257,11 @@ void display_string(int line, char *s) {
 			s++;
 		} else
 			textbuffer[line][i] = ' ';
+}
+
+void display_snake()
+{
+
 }
 
 void display_image(int x, const uint8_t *data) {
@@ -345,12 +345,10 @@ int main(void) {
 
 int position = 0;
 int position2 = position + 96;
-int running = 1;
-int button = getbtns();
 
 display_init();
 display_string(0, "-------------------");
-display_string(1, "|										    |");
+display_string(1, "|				    					  |");
 display_string(2, "|									    	|");
 display_string(3, "-------------------");
 display_update();
@@ -359,41 +357,36 @@ display_image(position + 96, icon);
 
 while(1)
 {
-	if (getbtns() == 4)
+	if (getbtns() == 8)
 	{
 	position2--;
 	display_update();
-  display_image(position2, icon);
-	display_image(position, player);
+	display_image(position, icon);
+	}
+
+	if (getbtns() == 4)
+	{
+	position2++;
+	display_update();
+	display_image(position, icon);
 	}
 
 	if (getbtns() == 2)
 	{
-	position2++;
-	display_update();
-  display_image(position2, icon);
-	display_image(position, player);
-	}
-
-	if (getbtns() == 1)
-	{
 	position--;
 	display_update();
-  display_image(position, player);
 	display_image(position2, icon);
 	}
 
-	while(pressFforRespect() == 1 )
+	while(getbtns() == 1 )
 	{
 	position++;
 	display_update();
-  display_image(position, player);
 	display_image(position2, icon);
 	}
 
 	if(getbtns() == 0)
 	{
-  display_image(position, player);
 	display_image(position2, icon);
 	}
 
@@ -402,7 +395,6 @@ while(1)
 	position++;
 	position2;
 	display_update();
-  display_image(position, player);
 	display_image(position2, icon);
 	}
 
