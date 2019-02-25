@@ -249,12 +249,14 @@ void display_init() {
 
 void begin(int body)
 {
-  int i;
-    for(i = 0; i <= body; i++)
-    {
-        wall[155 + i] = 63;
-        wall[140 + i] = 255;
+  node_t * head = NULL;
+  head = malloc(sizeof(node_t));
+  if (head == NULL) {
+      return 1;
     }
+
+    head->val = 1;
+    head->next = NULL;
 
 }
 
