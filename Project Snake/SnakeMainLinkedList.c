@@ -1,5 +1,8 @@
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
+
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -16,8 +19,9 @@
 #define DISPLAY_RESET_MASK 0x200
 
 typedef struct node {
-    int val;
-    struct node * next;
+    uint8_t pixel;
+    int pos;
+    struct node* next;
 } n_snake;
 
 int getbtns(void){
@@ -27,6 +31,7 @@ int getbtns(void){
 }
 
 char textbuffer[4][16];
+
 
 static const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -213,7 +218,6 @@ uint8_t spi_send_recv(uint8_t data) {
 }
 
 
-
 void display_init() {
 	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
 	delay(10);
@@ -247,18 +251,52 @@ void display_init() {
   TRISFSET = 0x02;
 }
 
-void begin(int body)
+//skapar en orm bestående av länkade listor, varje nod håller koll på en position i vektorn och uint_8 värdet som styr pixlarna
+void start(int body, int startpos)
 {
-  node_t * head = NULL;
-  head = malloc(sizeof(node_t));
-  if (head == NULL) {
-      return 1;
-    }
+  n_snake *S_head = NULL;
+  S_head = (n_snake*) malloc(sizeof(n_snake));
 
-    head->val = 1;
-    head->next = NULL;
+  S_head->pixel = 127; //först som huvud
+  S_head->pos = startpos;
+  S_head->next = NULL;
+
+  int i;
+  n_snake * S_current = S_head->next;
+
+  for(i = 1; i < body; i++)
+  {
+    S_current = malloc(sizeof(n_snake));
+    S_current->pixel = 127;
+    S_current->pos = startpos-i;
+    S_current->next = NULL;
+
+    S_current = S_current->next;
+  }
+}
+
+//ha med en funktion som undersöker kollisioner
+void go_left(int s, int l)
+{
+
+/*
+int nextstep = S_head-> ;
+
+node_t *S_current = S_head;
+S_head->pos += 1;
+
+while(S_current != NULL)
+{
+  nextstep = S_current->pos;
+  S_current->pos +=1
 
 }
+*/
+
+  wall[s] = 63;
+  wall[l] = 255;
+}
+
 
 //test för upp & ner
 void begin2(int body)
@@ -267,11 +305,7 @@ void begin2(int body)
 }
 
 //behöver ändras
-void go_left(int s, int l)
-{
-  wall[s] = 63;
-  wall[l] = 255;
-}
+
 
 void go_up(int pos)
 {
@@ -402,7 +436,7 @@ int gamveOver = 0;
 
 display_init();
 display_wall(0, wall);
-begin(body);
+start(body, startPos);
 
 //display_image(position, player);
 //display_image(position2, icon);
@@ -419,7 +453,9 @@ while(1)
     display_wall(0, wall);
 
     if(startPos == 254)
-      gamveOver = 1;
+    {
+
+    }
 	}
 
   if (getbtns() == 4)
