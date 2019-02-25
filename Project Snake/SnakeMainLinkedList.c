@@ -15,8 +15,12 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-int getbtns(void)
-{
+typedef struct node {
+    int val;
+    struct node * next;
+} n_snake;
+
+int getbtns(void){
     int btn = 0x00;
     btn =  ((PORTD >> 4) & 0x0E) | ((PORTF >> 1) & 0x01) ;
     return btn;
