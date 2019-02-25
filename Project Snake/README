@@ -2,13 +2,13 @@ PROJECT SNAKE
 Made by Abyel Tesfay & Daniel Nyeko Moini
 
 The following template was used to simplify the project
-All C and Assembly code here was made during the project
+All C code here was made during the project
 
 
 The folder contains the following source files:
 
-main.c:
-	Contains the entry point main()
+SnakeMain.c:
+	Contains the entry point main() and the initialization of the "snake" game
 
 vectors.S:
 	Contains the interrupt handler and the exception handler

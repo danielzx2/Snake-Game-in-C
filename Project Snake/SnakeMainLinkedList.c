@@ -1,5 +1,8 @@
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
+
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -15,14 +18,20 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-int getbtns(void)
-{
+typedef struct node {
+    uint8_t pixel;
+    int pos;
+    struct node* next;
+} n_snake;
+
+int getbtns(void){
     int btn = 0x00;
     btn =  ((PORTD >> 4) & 0x0E) | ((PORTF >> 1) & 0x01) ;
     return btn;
 }
 
 char textbuffer[4][16];
+
 
 static const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -209,7 +218,6 @@ uint8_t spi_send_recv(uint8_t data) {
 }
 
 
-
 void display_init() {
 	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
 	delay(10);
@@ -243,16 +251,52 @@ void display_init() {
   TRISFSET = 0x02;
 }
 
-void begin(int body)
+//skapar en orm bestående av länkade listor, varje nod håller koll på en position i vektorn och uint_8 värdet som styr pixlarna
+void start(int body, int startpos)
 {
+  n_snake *S_head = NULL;
+  S_head = (n_snake*) malloc(sizeof(n_snake));
+
+  S_head->pixel = 127; //först som huvud
+  S_head->pos = startpos;
+  S_head->next = NULL;
+
   int i;
-    for(i = 0; i <= body; i++)
-    {
-        wall[155 + i] = 63;
-        wall[140 + i] = 255;
-    }
+  n_snake * S_current = S_head->next;
+
+  for(i = 1; i < body; i++)
+  {
+    S_current = malloc(sizeof(n_snake));
+    S_current->pixel = 127;
+    S_current->pos = startpos-i;
+    S_current->next = NULL;
+
+    S_current = S_current->next;
+  }
+}
+
+//ha med en funktion som undersöker kollisioner
+void go_left(int s, int l)
+{
+
+/*
+int nextstep = S_head-> ;
+
+node_t *S_current = S_head;
+S_head->pos += 1;
+
+while(S_current != NULL)
+{
+  nextstep = S_current->pos;
+  S_current->pos +=1
 
 }
+*/
+
+  wall[s] = 63;
+  wall[l] = 255;
+}
+
 
 //test för upp & ner
 void begin2(int body)
@@ -261,26 +305,12 @@ void begin2(int body)
 }
 
 //behöver ändras
-void go_left(int s, int l)
-{
-  wall[s] = 63;
-  wall[l] = 255;
-}
 
-void go_right(int s, int r)
-{
-	wall[s] = 255;
-	wall[r] = 63;
-}
 
 void go_up(int pos)
 {
   wall[pos] = (wall[pos] << 1) + 0x800;
-}
 
-void go_down(int pos)
-{
-  wall[pos] = (wall[pos] << 1) + 0x800;
 }
 
 
@@ -359,11 +389,6 @@ void display_update() {
 	}
 }
 
-int is_left = 0;
-int is_right = 1;
-int is_up = 0;
-int is_down = 0;
-
 int main(void) {
 	/* Set up peripheral bus clock */ //PLL output dividerat med 8??
 	OSCCON &= ~0x180000;
@@ -411,101 +436,13 @@ int gamveOver = 0;
 
 display_init();
 display_wall(0, wall);
-begin(body);
+start(body, startPos);
 
 //display_image(position, player);
 //display_image(position2, icon);
 
 while(1)
 {
-
-while(is_right)
-{
-	if(getbtns() == 8)
-	{
-		go_down(start2);
-		is_right = 0;
-		is_down = 1;
-		display_wall(0, wall);
-	}
-
-	if(getbtns() == 4)
-	{
-		go_up(start2);
-		is_right = 0;
-		is_up = 1;
-		display_wall;
-	}
-}
-
-while(is_down)
-{
-		if(getbtns() == 8)
-	{
-		go_left(startPos,lastPos);
-		startPos++;
-    lastPos++;
-		is_down = 0;
-		is_left = 1;
-		display_wall(0, wall);
-	}
-
-		if(getbtns() == 4)
-		{
-			go_right(startPos, lastPos);
-			startPos++;
-      lastPos++;
-			is_down = 0;
-			is_right = 1;
-			display_wall(0, wall);
-		}
-}
-
-while(is_left)
-{
-	if(getbtns() == 8)
-	{
-		go_down(start2);
-		is_left = 0;
-		is_down = 1;
-		display_wall(0, wall);
-	}
-
-	if (getbtns() == 4) 
-	{
-		go_up(start2);
-		is_left = 0;
-		is_up = 1;
-		display_wall(0, wall);
-	}
-	
-}
-
-while(is_up)
-{
-	if (getbtns() == 8) 
-	{
-		go_left(startPos, lastPos);
-		startPos++;
-    lastPos++;
-		is_up = 0;
-		is_left = 1;
-		display_wall(0, wall);
-	}
-	
-	if (getbtns() == 4) 
-	{
-		go_right(startPos, lastPos);
-		startPos++;
-    lastPos++;
-		is_up = 0;
-		is_right = 1;
-		display_wall(0, wall);
-	}
-	
-}
-
-
 
   if(getbtns() == 8)
 	{
@@ -516,7 +453,9 @@ while(is_up)
     display_wall(0, wall);
 
     if(startPos == 254)
-      gamveOver = 1;
+    {
+
+    }
 	}
 
   if (getbtns() == 4)
