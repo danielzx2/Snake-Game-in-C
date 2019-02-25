@@ -1,8 +1,6 @@
 #include <pic32mx.h>
 #include <stdint.h>
 
-
-
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
 #define DISPLAY_COMMAND_DATA PORTFbits.RF4
@@ -18,29 +16,13 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-volatile int* trise = (volatile int*) 0xbf886100;
-
-int getsw(void)
-{
-    int sw = 0x0;
-    sw = (PORTD >> 8) & 0x0f;
-    return sw; 
-}
-
 int getbtns(void)
 {
-    int btn = 0x0;
-    btn =  (PORTD >> 5)  & 0x07;
+    int btn = 0x00;
+    btn =  ((PORTD >> 4) & 0x0E) | ((PORTF >> 1) & 0x01) ;
+
     return btn;
 }
-
-int pressFforRespect(void)
-{
-	int F = 0x0;
-	F = (PORTF & 0x002);
-	return F;
-}
-
 
 char textbuffer[4][16];
 
@@ -194,14 +176,26 @@ const uint8_t const icon[] = {
 	184, 69, 186, 69, 254, 80, 175, 217,
 };
 
-const uint8_t const player[] = {
-	6, 11, 25, 44, 72, 81, 98, 102, 
-	122, 123, 147, 176, 190, 237, 239, 250
-};
+uint8_t  wall[] = {
+0, 0, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252,
+252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252,
+252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252,
+252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 0, 0,
 
-const uint8_t const test[] = 
-{
-	0,
+0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0,
+
+0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0,
+
+0, 0, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63,
+63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63,
+63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63,
+63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 0, 0,
 };
 
 void delay(int cyc) {
@@ -209,13 +203,14 @@ void delay(int cyc) {
 	for(i = cyc; i > 0; i--);
 }
 
-
 uint8_t spi_send_recv(uint8_t data) {
 	while(!(SPI2STAT & 0x08));
 	SPI2BUF = data;
 	while(!(SPI2STAT & 0x01));
 	return SPI2BUF;
 }
+
+
 
 void display_init() {
 	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
@@ -247,10 +242,40 @@ void display_init() {
 	spi_send_recv(0xAF);
 
 	TRISDSET = 0x0FE0;
-	TRISFSET = 0x002;
-	
+  TRISFSET = 0x02;
+}
+
+void begin(int body)
+{
+  int i;
+    for(i = 0; i <= body; i++)
+    {
+        wall[155 + i] = 63;
+        wall[140 + i] = 255;
+    }
+
+    //skapa en vektor som innehåller positionen av varje kropp
+}
+
+//test för upp & ner
+void begin2(int body)
+{
+  wall[265] = 0;
+}
+
+//behöver ändras
+void go_left(int s, int l)
+{
+  wall[s] = 63;
+  wall[l] = 255;
+}
+
+void go_up(int pos)
+{
+  wall[pos] = (wall[pos] >> 1) + 0x800;
 
 }
+
 
 void display_string(int line, char *s) {
 	int i;
@@ -285,6 +310,24 @@ void display_image(int x, const uint8_t *data) {
 	}
 }
 
+void display_wall(int x, const uint8_t *data) {
+	int i, j;
+
+	for(i = 0; i < 4; i++) {
+		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+		spi_send_recv(0x22);
+		spi_send_recv(i);
+
+		spi_send_recv(x & 0xF);
+		spi_send_recv(0x10 | ((x >> 4) & 0xF));
+
+		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
+
+		for(j = 0; j < 128; j++)
+			spi_send_recv(~data[i*128 + j]);
+	}
+}
+
 void display_update() {
 	int i, j, k;
 	int c;
@@ -309,7 +352,6 @@ void display_update() {
 	}
 }
 
-
 int main(void) {
 	/* Set up peripheral bus clock */ //PLL output dividerat med 8??
 	OSCCON &= ~0x180000;
@@ -320,10 +362,6 @@ int main(void) {
 	ODCE = 0x0;					//Configurerar om den specifika I/O pin ska agera normalt som digital output eller som en "open-drain" HELP
 	TRISECLR = 0xFF;		//OM TRIS-E rensas så kommer outpit nivån att konverteras av en analog enhet
 	PORTE = 0x0;				//alla pins i PORT-E sätts till output och ? alla pins (konfgurerade som analoga inputs) rensas ? HELP
-
-	//extra
-	*trise = *trise & 0xfff1;
-
 
 	/* Output pins for display signals */
 
@@ -350,71 +388,74 @@ int main(void) {
 	/* Turn on SPI */
 	SPI2CONSET = 0x8000;
 
-int position = 0;
-int position2 = position + 96;
-int running = 1;
-int button = getbtns();
+int body = 9;
+int startPos = 155;
+int lastPos = 140;
+
+int start2 = 265;
+int gamveOver = 0;
+
+//int position2 = position + 96;
 
 display_init();
-display_string(0, "-------------------");
-display_string(1, "|										    |");
-display_string(2, "|									    	|");
-display_string(3, "-------------------");
-display_update();
-display_image(position, player);
-display_image(position2, icon);
+display_wall(0, wall);
+begin(body);
+
+//display_image(position, player);
+//display_image(position2, icon);
 
 while(1)
 {
-	while (getbtns() == 4)
+
+  if(getbtns() == 8)
 	{
-	position2--;
-	display_update();
-  display_image(position2, icon);
-	display_image(position, player);
+    delay(300000);
+    go_left(startPos,lastPos);
+    startPos++;
+    lastPos++;
+    display_wall(0, wall);
+
+    if(startPos == 254)
+      gamveOver = 1;
 	}
 
-	while (getbtns() == 2)
-	{
-	position2++;
-	display_update();
-  display_image(position2, icon);
-	display_image(position, player);
-	}
+  if (getbtns() == 4)
+  {
+    delay(300000);
+    go_up(start2);
+    display_wall(0, wall);
+  }
 
-	while (getbtns() == 1)
-	{
-	position--;
-	display_update();
-  display_image(position, player);
-	display_image(position2, icon);
-	}
+  if (getbtns() == 0)
+  {
 
-	while(pressFforRespect() == 2)
-	{
-	position++;
-	display_update();
-  display_image(position, player);
-	display_image(position2, icon);
-	}
-	
-	while(getbtns() == 0)
-	{
-  display_image(position, player);
-	display_image(position2, icon);
-	}
 
-	while(getbtns() == 5)
-	{
-	position++;
-	position2;
-	display_update();
-  display_image(position, player);
-	display_image(position2, icon);
-	}
+    display_wall(0, wall);
+  }
 
-}  
+}
 
 	for(;;) ;
 	return 0;
 }
+
+
+
+
+/*
+
+
+if (getbtns() == 2)
+{
+position--;
+display_update();
+display_wall(0, wall);
+}
+
+while(getbtns() == 1 )
+{
+position++;
+display_update();
+display_wall(0, wall);
+}
+*/
