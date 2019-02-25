@@ -428,11 +428,8 @@ while(1)
 
   if (getbtns() == 0)
   {
-
-
     display_wall(0, wall);
   }
-
 }
 
 	for(;;) ;
