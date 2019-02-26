@@ -337,14 +337,18 @@ SPI2CONSET = 0x8000;
 display_init();
 //timer??
 cleanSnake();
-SnakeSpawn();
-//snake init??
+SnakeStart();
+FoodStart();
+
 //
 display_wall(0, wall);
 begin(body);
 
 //display_image(position, player);
 //display_image(position2, icon);
+
+
+
 
 
 
