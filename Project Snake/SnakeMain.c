@@ -1,6 +1,7 @@
 #include <pic32mx.h>
 #include <stdint.h>
 #include "SnakeHeader.h"
+#include <stdlib.h>
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -191,7 +192,6 @@ void begin(int body)
         wall[155 + i] = 63;
         wall[140 + i] = 255;
     }
-
 }
 
 //test för upp & ner

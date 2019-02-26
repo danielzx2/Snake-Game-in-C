@@ -7,6 +7,8 @@
 #define SnakeBody 100
 #define STARTY 15
 #define STARTX 45
+#define SNAKEMAP_LENGTH 512
+
 
 int is_left = 0;
 int is_right = 1;
