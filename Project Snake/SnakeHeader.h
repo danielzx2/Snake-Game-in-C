@@ -7,16 +7,21 @@
 #define SnakeBody 100
 #define STARTY 15
 #define STARTX 45
+
 int is_left = 0;
 int is_right = 1;
 int is_up = 2;
 int is_down = 3;
 
 uint8_t snakeMap[512];
+int gameOver = 0;
 
 int is_validPoint(int x, int y);
 void generatePixel(int x, int y);
 void cleanSnake(void);
+void delay(int cyc);
+uint8_t spi_send_recv(uint8_t data);
+
 
 typedef struct {
     int x;

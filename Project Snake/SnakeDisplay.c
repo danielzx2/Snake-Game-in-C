@@ -14,6 +14,13 @@ uint8_t spi_send_recv(uint8_t data) {
 	return SPI2BUF;
 }
 
+uint8_t sendData(uint8_t data) {
+	int i;
+	for(i = 0; i < SNAKEMAP_SIZE; i++) {
+		spi_send_recv(snakeMap[i]);
+	}
+}
+
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
 {
 	if (x < 128 && y < 32 && x > 0 && y > 0) {

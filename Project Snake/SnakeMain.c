@@ -338,17 +338,23 @@ display_init();
 //timer??
 cleanSnake();
 SnakeStart();
-FoodStart();
 
-//
-display_wall(0, wall);
-begin(body);
+while(1)
+{
+    //snake display_update
+
+
+
+
+
+
+}
+
+//display_wall(0, wall);
+//begin(body);
 
 //display_image(position, player);
 //display_image(position2, icon);
-
-
-
 
 
 
