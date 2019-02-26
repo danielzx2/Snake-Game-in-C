@@ -5,6 +5,7 @@
 #include <time.h>
 
 #define FOOD_VECTOR_SIZE 4
+#define SNAKEMAP_SIZE 512
 
 void delay(int cyc) {
 	int i;
@@ -22,6 +23,8 @@ uint8_t sendData(uint8_t data) {
 	int i;
 	for(i = 0; i < SNAKEMAP_SIZE; i++) {
 		spi_send_recv(snakeMap[i]);
+	}
+}
 
 int randomNumberGenerator(void)
 {
