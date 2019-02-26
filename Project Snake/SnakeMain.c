@@ -16,6 +16,8 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
+#define SNAKEMAP_SIZE 512
+
 int getbtns(void)
 {
     int btn = 0x00;
@@ -204,10 +206,20 @@ void go_left(int s, int l)
   wall[l] = 255;
 }
 
+void go_right(int s, int r)
+{
+	wall[s] = 255;
+	wall[r] = 63;
+}
+
 void go_up(int pos)
 {
   wall[pos] = (wall[pos] << 1) + 0x800;
+}
 
+void go_down(int pos)
+{
+  wall[pos] = (wall[pos] << 1) + 0x800;
 }
 
 
@@ -286,6 +298,39 @@ void display_update() {
 	}
 }
 
+int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
+{ 
+	if (x < 128 && y < 32 && x > 0 && y > 0) {
+		return 1;
+	}
+	
+}
+
+void generatePixel(int x, int y)
+{
+	if(is_validPoint)
+	{
+		int range = y % 8; /*Determines which pixel of within the 8 bits are used.*/
+		int row = y / 8;	/*Which out of the 4 rows will the point generate on.*/
+		int des = row*128+x; /*The determined index of the pixel.*/
+		snakeMap[des] = snakeMap[des] | (0x01 << range);
+	}
+}
+
+void cleanSnake(void)
+{
+	int x;
+	for(x = 0; x < SNAKEMAP_SIZE; x++)
+	{
+		snakeMap[x] = 0;
+	}
+}
+
+int is_left = 0;
+int is_right = 1;
+int is_up = 0;
+int is_down = 0;
+
 int main(void) {
 	/* Set up peripheral bus clock */ //PLL output dividerat med 8??
 	OSCCON &= ~0x180000;
@@ -340,6 +385,94 @@ begin(body);
 
 while(1)
 {
+
+while(is_right)
+{
+	if(getbtns() == 8)
+	{
+		go_down(start2);
+		is_right = 0;
+		is_down = 1;
+		display_wall(0, wall);
+	}
+
+	if(getbtns() == 4)
+	{
+		go_up(start2);
+		is_right = 0;
+		is_up = 1;
+		display_wall;
+	}
+}
+
+while(is_down)
+{
+		if(getbtns() == 8)
+	{
+		go_left(startPos,lastPos);
+		startPos++;
+    lastPos++;
+		is_down = 0;
+		is_left = 1;
+		display_wall(0, wall);
+	}
+
+		if(getbtns() == 4)
+		{
+			go_right(startPos, lastPos);
+			startPos++;
+      lastPos++;
+			is_down = 0;
+			is_right = 1;
+			display_wall(0, wall);
+		}
+}
+
+while(is_left)
+{
+	if(getbtns() == 8)
+	{
+		go_down(start2);
+		is_left = 0;
+		is_down = 1;
+		display_wall(0, wall);
+	}
+
+	if (getbtns() == 4) 
+	{
+		go_up(start2);
+		is_left = 0;
+		is_up = 1;
+		display_wall(0, wall);
+	}
+	
+}
+
+while(is_up)
+{
+	if (getbtns() == 8) 
+	{
+		go_left(startPos, lastPos);
+		startPos++;
+    lastPos++;
+		is_up = 0;
+		is_left = 1;
+		display_wall(0, wall);
+	}
+	
+	if (getbtns() == 4) 
+	{
+		go_right(startPos, lastPos);
+		startPos++;
+    lastPos++;
+		is_up = 0;
+		is_right = 1;
+		display_wall(0, wall);
+	}
+	
+}
+
+
 
   if(getbtns() == 8)
 	{
