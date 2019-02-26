@@ -16,11 +16,7 @@ void SnakeStart(){
 }
 
 void FoodStart(){
-  int i;
-  Food[0].x =
-  Food[1].x
-  Food[2].x
-  Food[3].x
+
 
 
   }
