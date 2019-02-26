@@ -56,14 +56,15 @@ void drawFood()
 {
 	int x;
 	int y;
-	for(int x = 0; x < FOOD_VECTOR_SIZE; x++)
+	for(int k = 0; x < FOOD_VECTOR_SIZE; x++)
 	{
-		x = food[i].x;
-		y = food[i].y;
+		x = food[k].x;
+		y = food[k].y;
 
 		generatePixel(x, y);
 	}
 }
+
 
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
 {
