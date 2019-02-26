@@ -1,6 +1,7 @@
 #include <pic32mx.h>
 #include <stdint.h>
-#include
+#include "SnakeHeader.h"
+#include <stdlib.h>
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -17,6 +18,8 @@
 #define DISPLAY_RESET_MASK 0x200
 
 #define SNAKEMAP_SIZE 512
+
+
 
 int getbtns(void)
 {
@@ -190,7 +193,6 @@ void begin(int body)
         wall[155 + i] = 63;
         wall[140 + i] = 255;
     }
-
 }
 
 //test för upp & ner
@@ -297,8 +299,6 @@ void display_update() {
 		}
 	}
 }
-
-
 
 int is_left = 0;
 int is_right = 1;

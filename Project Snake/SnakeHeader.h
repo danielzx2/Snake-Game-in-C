@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define S_body 100
+#define SNAKEMAP_LENGTH 512
 
 uint8_t snakeMap[512];
 
-void generatePixel
