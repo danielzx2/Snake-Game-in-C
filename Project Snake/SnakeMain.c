@@ -298,33 +298,7 @@ void display_update() {
 	}
 }
 
-int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
-{ 
-	if (x < 128 && y < 32 && x > 0 && y > 0) {
-		return 1;
-	}
-	
-}
 
-void generatePixel(int x, int y)
-{
-	if(is_validPoint)
-	{
-		int range = y % 8; /*Determines which pixel of within the 8 bits are used.*/
-		int row = y / 8;	/*Which out of the 4 rows will the point generate on.*/
-		int des = row*128+x; /*The determined index of the pixel.*/
-		snakeMap[des] = snakeMap[des] | (0x01 << range);
-	}
-}
-
-void cleanSnake(void)
-{
-	int x;
-	for(x = 0; x < SNAKEMAP_SIZE; x++)
-	{
-		snakeMap[x] = 0;
-	}
-}
 
 int is_left = 0;
 int is_right = 1;
@@ -438,19 +412,19 @@ while(is_left)
 		display_wall(0, wall);
 	}
 
-	if (getbtns() == 4) 
+	if (getbtns() == 4)
 	{
 		go_up(start2);
 		is_left = 0;
 		is_up = 1;
 		display_wall(0, wall);
 	}
-	
+
 }
 
 while(is_up)
 {
-	if (getbtns() == 8) 
+	if (getbtns() == 8)
 	{
 		go_left(startPos, lastPos);
 		startPos++;
@@ -459,8 +433,8 @@ while(is_up)
 		is_left = 1;
 		display_wall(0, wall);
 	}
-	
-	if (getbtns() == 4) 
+
+	if (getbtns() == 4)
 	{
 		go_right(startPos, lastPos);
 		startPos++;
@@ -469,7 +443,7 @@ while(is_up)
 		is_right = 1;
 		display_wall(0, wall);
 	}
-	
+
 }
 
 
