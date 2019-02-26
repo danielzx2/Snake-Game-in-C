@@ -72,7 +72,7 @@ void generatePixel(int x, int y)
 		int range = y % 8; /*Determines which pixel of within the 8 bits are used.*/
 		int row = y / 8;	/*Which out of the 4 rows will the point generate on.*/
 		int des = row*128+x; /*The determined index of the pixel.*/
-		snakeMap[des] = snakeMap[des] | (0x01 << range);
+		snakeMap[des] = snakeMap[des] | (0x01 << range); /*we shift the value of "range" by 1  so that bits 1-7 can be used properly*/
 	}
 }
 
