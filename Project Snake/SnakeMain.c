@@ -15,6 +15,8 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
+#define SNAKEMAP_SIZE 512
+
 int getbtns(void)
 {
     int btn = 0x00;
@@ -356,6 +358,34 @@ void display_update() {
 			for(k = 0; k < 8; k++)
 				spi_send_recv(font[c*8 + k]);
 		}
+	}
+}
+
+int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
+{ 
+	if (x < 128 && y < 32 && x > 0 && y > 0) {
+		return 1;
+	}
+	
+}
+
+void generatePixel(int x, int y)
+{
+	if(is_validPoint)
+	{
+		int range = y % 8; /*Determines which pixel of within the 8 bits are used.*/
+		int row = y / 8;	/*Which out of the 4 rows will the point generate on.*/
+		int des = row*128+x; /*The determined index of the pixel.*/
+		snakeMap[des] = snakeMap[des] | (0x01 << range);
+	}
+}
+
+void cleanSnake(void)
+{
+	int x;
+	for(x = 0; x < SNAKEMAP_SIZE; x++)
+	{
+		snakeMap[x] = 0;
 	}
 }
 
