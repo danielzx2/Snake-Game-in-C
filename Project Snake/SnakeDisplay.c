@@ -19,7 +19,6 @@ int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual
 	if (x < 128 && y < 32 && x > 0 && y > 0) {
 		return 1;
 	}
-
 }
 
 void generatePixel(int x, int y)

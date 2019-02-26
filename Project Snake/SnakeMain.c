@@ -1,6 +1,6 @@
 #include <pic32mx.h>
 #include <stdint.h>
-#include
+#include "SnakeHeader.h"
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -18,6 +18,7 @@
 
 #define SNAKEMAP_SIZE 512
 
+//Fetches the input from the 4 buttons in the i/o shield
 int getbtns(void)
 {
     int btn = 0x00;
@@ -298,64 +299,67 @@ void display_update() {
 	}
 }
 
-
-
-int is_left = 0;
-int is_right = 1;
-int is_up = 0;
-int is_down = 0;
-
 int main(void) {
-	/* Set up peripheral bus clock */ //PLL output dividerat med 8??
-	OSCCON &= ~0x180000;
-	OSCCON |= 0x080000;
+/* Set up peripheral bus clock */ //PLL output dividerat med 8??
+OSCCON &= ~0x180000;
+OSCCON |= 0x080000;
 
-	/* Set up output pins */
-	AD1PCFG = 0xFFFF;   //AD1PC kontrollerar analoga port pins (sätts till digitalt) HELP
-	ODCE = 0x0;					//Configurerar om den specifika I/O pin ska agera normalt som digital output eller som en "open-drain" HELP
-	TRISECLR = 0xFF;		//OM TRIS-E rensas så kommer outpit nivån att konverteras av en analog enhet
-	PORTE = 0x0;				//alla pins i PORT-E sätts till output och ? alla pins (konfgurerade som analoga inputs) rensas ? HELP
+/* Set up output pins */
+AD1PCFG = 0xFFFF;   //AD1PC kontrollerar analoga port pins (sätts till digitalt) HELP
+ODCE = 0x0;					//Configurerar om den specifika I/O pin ska agera normalt som digital output eller som en "open-drain" HELP
+TRISECLR = 0xFF;		//OM TRIS-E rensas så kommer outpit nivån att konverteras av en analog enhet
+PORTE = 0x0;				//alla pins i PORT-E sätts till output och ? alla pins (konfgurerade som analoga inputs) rensas ? HELP
 
-	/* Output pins for display signals */
+/* Output pins for display signals */
+PORTF = 0xFFFF;			//Sätter alla pins i PORT-F till att ta emot data
+PORTG = (1 << 9);		//bit 9 ska skriva ut data
+ODCF = 0x0;					//liknar ODCE
+ODCG = 0x0;					//liknar ODCE
+TRISFCLR = 0x70;		//bit 6-4 sätts till outputs i Port-F
+TRISGCLR = 0x200;		//bit 9 sätts till output i port-g
 
-	PORTF = 0xFFFF;			//Sätter alla pins i PORT-F till att ta emot data
-	PORTG = (1 << 9);		//bit 9 ska skriva ut data
-	ODCF = 0x0;					//liknar ODCE
-	ODCG = 0x0;					//liknar ODCE
-	TRISFCLR = 0x70;		//bit 6-4 sätts till outputs i Port-F
-	TRISGCLR = 0x200;		//bit 9 sätts till output i port-g
+/* Set up input pins */
+TRISDSET = (1 << 8);	//bit 8 i tris-d blir en input
+TRISFSET = (1 << 1);	//bit 1 i tris-f blir en input
 
-	/* Set up input pins */
-	TRISDSET = (1 << 8);	//bit 8 i tris-d blir en input
-	TRISFSET = (1 << 1);	//bit 1 i tris-f blir en input
+/* Set up SPI as master */
+SPI2CON = 0;					//Alla bits i spi2 = 0
+SPI2BRG = 4;					//Baud rate = 4 (Ska dividera SCK)
 
-	/* Set up SPI as master */
-	SPI2CON = 0;					//Alla bits i spi2 = 0
-	SPI2BRG = 4;					//Baud rate = 4 (Ska dividera SCK)
+/* Clear SPIROV*/
+SPI2STATCLR &= ~0x40;	//Ny data har tagits emot men slängs bort, programmer har ej läst förra datan (liknar IFS(0) )
+/* Set CKP = 1, MSTEN = 1; */
+SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising edge
 
-	/* Clear SPIROV*/
-	SPI2STATCLR &= ~0x40;	//Ny data har tagits emot men slängs bort, programmer har ej läst förra datan (liknar IFS(0) )
-	/* Set CKP = 1, MSTEN = 1; */
-  SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising edge
-
-	/* Turn on SPI */
-	SPI2CONSET = 0x8000;
-
-int body = 9;
-int startPos = 155;
-int lastPos = 140;
-
-int start2 = 265;
-int gamveOver = 0;
-
-//int position2 = position + 96;
+/* Turn on SPI */
+SPI2CONSET = 0x8000;
 
 display_init();
+//timer??
+cleanSnake();
+SnakeSpawn();
+//snake init??
+//
 display_wall(0, wall);
 begin(body);
 
 //display_image(position, player);
 //display_image(position2, icon);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 while(1)
 {
