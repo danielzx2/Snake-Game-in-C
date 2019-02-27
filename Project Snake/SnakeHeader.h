@@ -26,7 +26,11 @@
 #define FOOD_VECTOR_SIZE 4
 #define SNAKEMAP_SIZE 512
 
+
+
+
 uint8_t snakeMap[512];
+
 
 int is_validPoint(int x, int y);
 int randomNumberGenerator(void);

@@ -60,16 +60,18 @@ void drawFood()
 void drawFrame()
 {
   int i;
-  for(i = 0; i < 32; i++)
+  for(i = 0; i < 31; i++)
   {
-    generatePixel(0, i);
-    generatePixel(127, i);
+
+    //generatePixel(0, i);
+    //generatePixel(127, i);
   }
 
-  for(i = 0; i < 128; i++)
+  for(i = 0; i < 127; i++)
   {
-    generatePixel(i, 0);
-    generatePixel(i, 31);
+    generatePixel(i, 7);
+    //generatePixel(i, 31);
+
   }
 }
 
