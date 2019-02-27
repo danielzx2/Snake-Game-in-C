@@ -63,7 +63,8 @@ void drawFood()
 {
 	int x;
 	int y;
-	for(int k = 0; x < FOOD_VECTOR_SIZE; x++)
+	int k;
+	for(k = 0; x < FOOD_VECTOR_SIZE; x++)
 	{
 		x = food[k].x;
 		y = food[k].y;
