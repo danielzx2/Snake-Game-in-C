@@ -23,54 +23,7 @@ void sendData(void) {
 		spi_send_recv(snakeMap[i]);
 	}
 }
-
-int randomNumberGeneratorX(void)
-{
-	int n;
-	int random;
-	int randomnumber = (random ^ n) % 127;
-	return randomnumber;
-}
-
-int randomNumberGeneratorY(void)
-{
-	int m;
-	int random;
-	int randomnumber = (random ^ m) % 31;
-	return randomnumber;
-}
-
-void generateFood()
-{	int x = randomNumberGeneratorX();
-	int y = randomNumberGeneratorY();
-
-	food[0].x = x;
-	food[0].y = y;
-	food[1].x = x + 1;
-	food[1].y = y;
-	food[2].x = x;
-	food[2].y = y + 1;
-	food[3].x = x + 1;
-	food[3].y = y + 1;
-
-	for(int i = 0; i < 4; i++)
-	{
-		food[i].ON = 1;
-	}
-}
-
-void drawFood()
-{
-	int x;
-	int y;
-	for(int k = 0; x < FOOD_VECTOR_SIZE; x++)
-	{
-		x = food[k].x;
-		y = food[k].y;
-
-		generatePixel(x, y);
-	}
-}
+///////
 
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
 {
