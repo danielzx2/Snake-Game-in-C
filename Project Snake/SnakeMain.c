@@ -3,15 +3,21 @@
 #include "SnakeHeader.h"
 #include <stdlib.h>
 
-//Random ints and stuff here
+#define DISPLAY_VDD PORTFbits.RF6
+#define DISPLAY_VBATT PORTFbits.RF5
+#define DISPLAY_COMMAND_DATA PORTFbits.RF4
+#define DISPLAY_RESET PORTGbits.RG9
 
-int is_left = 0;
-int is_right = 1;
-int is_up = 2;
-int is_down = 3;
-int gameOver = 0;
+#define DISPLAY_VDD_PORT PORTF
+#define DISPLAY_VDD_MASK 0x40
+#define DISPLAY_VBATT_PORT PORTF
+#define DISPLAY_VBATT_MASK 0x20
+#define DISPLAY_COMMAND_DATA_PORT PORTF
+#define DISPLAY_COMMAND_DATA_MASK 0x10
+#define DISPLAY_RESET_PORT PORTG
+#define DISPLAY_RESET_MASK 0x200
 
-//
+#define SNAKEMAP_SIZE 512
 
 //Fetches the input from the 4 buttons in the i/o shield
 int getbtns(void)
@@ -178,6 +184,22 @@ uint8_t  wall[] = {
 };
 
 
+void begin(int body)
+{
+  int i;
+    for(i = 0; i <= body; i++)
+    {
+        wall[155 + i] = 63;
+        wall[140 + i] = 255;
+    }
+}
+
+//test för upp & ner
+void begin2(int body)
+{
+  wall[265] = 0;
+}
+
 //behöver ändras
 void go_left(int s, int l)
 {
@@ -253,7 +275,7 @@ void display_wall(int x, const uint8_t *data) {
 	}
 }
 
-void string_update() {
+void display_update() {
 	int i, j, k;
 	int c;
 	for(i = 0; i < 4; i++) {
@@ -312,125 +334,132 @@ SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising e
 /* Turn on SPI */
 SPI2CONSET = 0x8000;
 
-
 display_init();
-string_update();
-
 //timer??
 cleanSnake();
 SnakeStart();
-//generateFood();
-drawFrame();
-drawSnake();
-sendData();
-
 
 while(1)
 {
-    if(!(gameOver == 1))
-    {
-        //drawFood();
-    }
-
-    else if(gameOver == 1)
-    {
+    //snake display_update
 
 
-    }
+
+
 
 
 }
-
-
-
-
-	for(;;) ;
-	return 0;
-}
-
-
-
-
-
-
-
-
 
 //display_wall(0, wall);
 //begin(body);
+
 //display_image(position, player);
 //display_image(position2, icon);
 
 
 
 
-/*
+
+
+
+
+
+
+
+
+
+
+
 
 while(1)
 {
 
-while(1)
+while(is_right)
 {
 	if(getbtns() == 8)
 	{
-
+		go_down(start2);
+		is_right = 0;
+		is_down = 1;
 		display_wall(0, wall);
 	}
 
 	if(getbtns() == 4)
 	{
-
+		go_up(start2);
+		is_right = 0;
+		is_up = 1;
 		display_wall;
 	}
 }
 
-while(1)
+while(is_down)
 {
 		if(getbtns() == 8)
 	{
-
+		go_left(startPos,lastPos);
+		startPos++;
+    lastPos++;
+		is_down = 0;
+		is_left = 1;
 		display_wall(0, wall);
 	}
 
 		if(getbtns() == 4)
 		{
-
+			go_right(startPos, lastPos);
+			startPos++;
+      lastPos++;
+			is_down = 0;
+			is_right = 1;
 			display_wall(0, wall);
 		}
 }
 
-while(1)
+while(is_left)
 {
 	if(getbtns() == 8)
 	{
-		//go_down(start2);
-
+		go_down(start2);
+		is_left = 0;
+		is_down = 1;
 		display_wall(0, wall);
 	}
 
 	if (getbtns() == 4)
 	{
-
+		go_up(start2);
+		is_left = 0;
+		is_up = 1;
 		display_wall(0, wall);
 	}
 
 }
 
-while(1)
+while(is_up)
 {
 	if (getbtns() == 8)
 	{
-
+		go_left(startPos, lastPos);
+		startPos++;
+    lastPos++;
+		is_up = 0;
+		is_left = 1;
 		display_wall(0, wall);
 	}
 
 	if (getbtns() == 4)
 	{
-
+		go_right(startPos, lastPos);
+		startPos++;
+    lastPos++;
+		is_up = 0;
+		is_right = 1;
 		display_wall(0, wall);
 	}
 
 }
+
 
 
   if(getbtns() == 8)
@@ -442,7 +471,7 @@ while(1)
     display_wall(0, wall);
 
     if(startPos == 254)
-    {}
+      gamveOver = 1;
 	}
 
   if (getbtns() == 4)
@@ -458,24 +487,15 @@ while(1)
   }
 }
 
-
-
-
-void begin(int body)
-{
-  int i;
-    for(i = 0; i <= body; i++)
-    {
-        wall[155 + i] = 63;
-        wall[140 + i] = 255;
-    }
+	for(;;) ;
+	return 0;
 }
 
-//test för upp & ner
-void begin2(int body)
-{
-  wall[265] = 0;
-}
+
+
+
+/*
+
 
 if (getbtns() == 2)
 {
