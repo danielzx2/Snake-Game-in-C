@@ -184,44 +184,8 @@ uint8_t  wall[] = {
 };
 
 
-void begin(int body)
-{
-  int i;
-    for(i = 0; i <= body; i++)
-    {
-        wall[155 + i] = 63;
-        wall[140 + i] = 255;
-    }
-}
-
-//test för upp & ner
-void begin2(int body)
-{
-  wall[265] = 0;
-}
 
 //behöver ändras
-void go_left(int s, int l)
-{
-  wall[s] = 63;
-  wall[l] = 255;
-}
-
-void go_right(int s, int r)
-{
-	wall[s] = 255;
-	wall[r] = 63;
-}
-
-void go_up(int pos)
-{
-  wall[pos] = (wall[pos] << 1) + 0x800;
-}
-
-void go_down(int pos)
-{
-  wall[pos] = (wall[pos] << 1) + 0x800;
-}
 
 
 void display_string(int line, char *s) {
@@ -335,161 +299,46 @@ SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising e
 SPI2CONSET = 0x8000;
 
 display_init();
+
 //timer??
-cleanSnake();
 SnakeStart();
 
-while(1)
-{
-    //snake display_update
-
-
-
-
-
-
-}
-
-//display_wall(0, wall);
-//begin(body);
-
-//display_image(position, player);
-//display_image(position2, icon);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 while(1)
-{
+ {
+    if(!(gameOver == 1))
+    {
+      cleanSnake();
+      drawSnake();
+      drawFrame();
+      sendData();
 
-while(is_right)
-{
-	if(getbtns() == 8)
-	{
-		go_down(start2);
-		is_right = 0;
-		is_down = 1;
-		display_wall(0, wall);
-	}
+    }
 
-	if(getbtns() == 4)
-	{
-		go_up(start2);
-		is_right = 0;
-		is_up = 1;
-		display_wall;
-	}
-}
+    else if(gameOver == 1)
+    {
 
-while(is_down)
-{
-		if(getbtns() == 8)
-	{
-		go_left(startPos,lastPos);
-		startPos++;
-    lastPos++;
-		is_down = 0;
-		is_left = 1;
-		display_wall(0, wall);
-	}
 
-		if(getbtns() == 4)
-		{
-			go_right(startPos, lastPos);
-			startPos++;
-      lastPos++;
-			is_down = 0;
-			is_right = 1;
-			display_wall(0, wall);
-		}
-}
+    }
 
-while(is_left)
-{
-	if(getbtns() == 8)
-	{
-		go_down(start2);
-		is_left = 0;
-		is_down = 1;
-		display_wall(0, wall);
-	}
 
-	if (getbtns() == 4)
-	{
-		go_up(start2);
-		is_left = 0;
-		is_up = 1;
-		display_wall(0, wall);
-	}
+ }
 
-}
-
-while(is_up)
-{
-	if (getbtns() == 8)
-	{
-		go_left(startPos, lastPos);
-		startPos++;
-    lastPos++;
-		is_up = 0;
-		is_left = 1;
-		display_wall(0, wall);
-	}
-
-	if (getbtns() == 4)
-	{
-		go_right(startPos, lastPos);
-		startPos++;
-    lastPos++;
-		is_up = 0;
-		is_right = 1;
-		display_wall(0, wall);
-	}
-
+for(;;) ;
+return 0;
 }
 
 
 
-  if(getbtns() == 8)
-	{
-    delay(300000);
-    go_left(startPos,lastPos);
-    startPos++;
-    lastPos++;
-    display_wall(0, wall);
 
-    if(startPos == 254)
-      gamveOver = 1;
-	}
 
-  if (getbtns() == 4)
-  {
-    delay(300000);
-    go_up(start2);
-    display_wall(0, wall);
-  }
 
-  if (getbtns() == 0)
-  {
-    display_wall(0, wall);
-  }
-}
 
-	for(;;) ;
-	return 0;
-}
+
+
+
+
+
 
 
 

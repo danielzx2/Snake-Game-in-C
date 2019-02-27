@@ -7,16 +7,35 @@
 #define SnakeBody 100
 #define STARTY 15
 #define STARTX 45
-#define SNAKEMAP_LENGTH 512
+#define SNAKE_LENGTH 100
 
+#define DISPLAY_VDD PORTFbits.RF6
+#define DISPLAY_VBATT PORTFbits.RF5
+#define DISPLAY_COMMAND_DATA PORTFbits.RF4
+#define DISPLAY_RESET PORTGbits.RG9
 
+#define DISPLAY_VDD_PORT PORTF
+#define DISPLAY_VDD_MASK 0x40
+#define DISPLAY_VBATT_PORT PORTF
+#define DISPLAY_VBATT_MASK 0x20
+#define DISPLAY_COMMAND_DATA_PORT PORTF
+#define DISPLAY_COMMAND_DATA_MASK 0x10
+#define DISPLAY_RESET_PORT PORTG
+#define DISPLAY_RESET_MASK 0x200
+
+#define SNAKEMAP_SIZE 512
+#define FOOD_VECTOR_SIZE 4
+#define SNAKEMAP_SIZE 512
+
+/*
 int is_left = 0;
 int is_right = 1;
 int is_up = 2;
 int is_down = 3;
+*/
 
 uint8_t snakeMap[512];
-int gameOver = 0;
+int gameOver;
 
 int is_validPoint(int x, int y);
 void generatePixel(int x, int y);

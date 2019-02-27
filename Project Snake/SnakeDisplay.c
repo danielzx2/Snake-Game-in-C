@@ -2,7 +2,6 @@
 #include <pic32mx.h>
 #include "SnakeHeader.h"
 #include <stdlib.h>
-#include <time.h>
 
 #define FOOD_VECTOR_SIZE 4
 #define SNAKEMAP_SIZE 512
@@ -19,13 +18,14 @@ uint8_t spi_send_recv(uint8_t data) {
 	return SPI2BUF;
 }
 
-uint8_t sendData(uint8_t data) {
+void sendData(void) {
 	int i;
-	for(i = 0; i < SNAKEMAP_SIZE; i++) {
+	for(i = 0; i < 128; i++) {
 		spi_send_recv(snakeMap[i]);
 	}
 }
 
+/*
 int randomNumberGenerator(void)
 {
 	srand(time(NULL));
@@ -34,8 +34,9 @@ int randomNumberGenerator(void)
 }
 
 void generateFood()
-{	int x = randomNumberGenerator;
-	int y = randomNumberGenerator;
+{
+	int x = randomNumberGenerator();
+	int y = randomNumberGenerator();
 
 	food[0].x = x;
 	food[0].y = y;
@@ -46,35 +47,25 @@ void generateFood()
 	food[3].x = x + 1;
 	food[3].y = y + 1;
 
-	for(int i = 0; i < 4; i++)
+	int i;
+	for(i = 0; i < 4; i++)
 	{
 		food[i].ON = 1;
 	}
 }
 
-void drawFood()
-{
-	int x;
-	int y;
-	for(int x = 0; x < FOOD_VECTOR_SIZE; x++)
-	{
-		x = food[i].x;
-		y = food[i].y;
-
-		generatePixel(x, y);
-	}
-}
+*/
 
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
 {
-	if (x < 128 && y < 32 && x > 0 && y > 0) {
+	if (x < 128 && y < 32 && !(x < 0) && !(y < 0) ) {
 		return 1;
 	}
 }
 
 void generatePixel(int x, int y)
 {
-	if(is_validPoint(x, y))
+	if(is_validPoint(x, y) == 1)
 	{
 		int range = y % 8; /*Determines which pixel of within the 8 bits are used.*/
 		int row = y / 8;	/*Which out of the 4 rows will the point generate on.*/
@@ -83,8 +74,7 @@ void generatePixel(int x, int y)
 	}
 }
 
-void cleanSnake(void)
-{
+void cleanSnake(void){
 	int x;
 	for(x = 0; x < SNAKEMAP_SIZE; x++)
 	{

@@ -15,13 +15,52 @@ void SnakeStart(){
       snake[i].y = STARTY;
       snake[i].ON = 1;
 
-      gameOver = 0;
+      //gameOver = 0;
   }
 }
 
-void FoodStart(){
+void drawFrame()
+{
+  int i;
+  for(i = 0; i < 32; i++)
+  {
+    generatePixel(0, i);
+    generatePixel(127, i);
+  }
 
-
-
+  for(i = 0; i < 128; i++)
+  {
+    generatePixel(i, 0);
+    generatePixel(i, 31);
   }
 }
+
+
+void drawSnake()
+{
+  int x;
+  int y;
+  int i;
+  for(i = 0; i < SNAKE_LENGTH; i++)
+  {
+    if(snake[i].ON)
+    {
+      x = snake[i].x;
+      y = snake[i].y;
+      generatePixel(x, y);
+    }
+  }
+ }
+
+ void drawFood()
+ {
+ 	int x;
+ 	int y;
+ 	int k;
+ 	for(k = 0; x < FOOD_VECTOR_SIZE; x++)
+ 	{
+ 		x = food[k].x;
+ 		y = food[k].y;
+ 		generatePixel(x, y);
+ 	}
+ }
