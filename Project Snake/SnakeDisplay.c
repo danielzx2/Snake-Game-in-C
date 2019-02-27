@@ -2,16 +2,14 @@
 #include <pic32mx.h>
 #include "SnakeHeader.h"
 #include <stdlib.h>
-#include <time.h>
-
-#define FOOD_VECTOR_SIZE 4
-#define SNAKEMAP_SIZE 512
 
 void delay(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
 }
 
+
+////slå ihop till en enda
 uint8_t spi_send_recv(uint8_t data) {
 	while(!(SPI2STAT & 0x08));
 	SPI2BUF = data;
@@ -19,52 +17,13 @@ uint8_t spi_send_recv(uint8_t data) {
 	return SPI2BUF;
 }
 
-uint8_t sendData(uint8_t data) {
+void sendData(void) {
 	int i;
-	for(i = 0; i < SNAKEMAP_SIZE; i++) {
+	for(i = 0; i < 128; i++) {
 		spi_send_recv(snakeMap[i]);
 	}
 }
-
-int randomNumberGenerator(void)
-{
-	srand(time(NULL));
-	int randomnumber = rand() % 127;
-	return randomnumber;
-}
-
-void generateFood()
-{	int x = randomNumberGenerator;
-	int y = randomNumberGenerator;
-
-	food[0].x = x;
-	food[0].y = y;
-	food[1].x = x + 1;
-	food[1].y = y;
-	food[2].x = x;
-	food[2].y = y + 1;
-	food[3].x = x + 1;
-	food[3].y = y + 1;
-
-	for(int i = 0; i < 4; i++)
-	{
-		food[i].ON = 1;
-	}
-}
-
-void drawFood()
-{
-	int x;
-	int y;
-	for(int k = 0; x < FOOD_VECTOR_SIZE; x++)
-	{
-		x = food[k].x;
-		y = food[k].y;
-
-		generatePixel(x, y);
-	}
-}
-
+///////
 
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
 {
@@ -73,6 +32,7 @@ int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual
 	}
 }
 
+///förklara helt  visa förståelse
 void generatePixel(int x, int y)
 {
 	if(is_validPoint(x, y))
