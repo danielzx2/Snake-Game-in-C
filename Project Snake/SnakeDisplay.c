@@ -26,16 +26,25 @@ uint8_t sendData(uint8_t data) {
 	}
 }
 
-int randomNumberGenerator(void)
+int randomNumberGeneratorX(void)
 {
-	srand(time(NULL));
-	int randomnumber = rand() % 127;
+	int n;
+	int random;
+	int randomnumber = (random ^ n) % 127;
+	return randomnumber;
+}
+
+int randomNumberGeneratorY(void)
+{
+	int m;
+	int random;
+	int randomnumber = (random ^ m) % 31;
 	return randomnumber;
 }
 
 void generateFood()
-{	int x = randomNumberGenerator;
-	int y = randomNumberGenerator;
+{	int x = randomNumberGeneratorX();
+	int y = randomNumberGeneratorY();
 
 	food[0].x = x;
 	food[0].y = y;
