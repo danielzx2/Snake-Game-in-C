@@ -148,7 +148,7 @@ void clearFood()
 		food[g].y = 0;
 		food[g].ON = 0;
 	}
-	
+
 }
 
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/
@@ -211,6 +211,4 @@ void display_init() {
 	delay(100);
 
   DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
-	TRISDSET = 0x0FE0;
-  TRISFSET = 0x02;
 }

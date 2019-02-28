@@ -75,7 +75,7 @@ void drawFrame()
   int i;
   for(i = 0; i < 128; i++)
   {
-    generatePixel(i, 0);
+    generatePixel(i, 2);
     generatePixel(i, 1);
 
     generatePixel(i, 30);
@@ -84,8 +84,8 @@ void drawFrame()
 
   for(i = 0; i < 32; i++)
   {
-    generatePixel(0, i);
     generatePixel(1, i);
+		generatePixel(2, i);
 
     generatePixel(126, i);
     generatePixel(127, i);

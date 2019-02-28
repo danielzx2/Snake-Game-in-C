@@ -35,6 +35,46 @@ int getbtns(void)
     return btn;
 }
 
+
+//
+void labinit( void )
+{
+  volatile int* trise = (volatile int*) 0xbf886100;
+  *trise = *trise & 0xfff1;
+  TRISDSET = 0x0FE0;
+  TRISFSET = 0x02;
+
+  T2CON = 0x070; /*Sets our prescaling to 256 and selects the internal clock.*/
+  TMR2 = 0; /*Resets the clock to 0.*/
+  PR2 = 0x7A12; /*The value of our pre-scaling*/
+
+  IPC(2) = 0x1f; /*Sets the priority of the Interrupt*/
+  IPC(2) = IPC(2) | 0x1c000000;
+  IEC(0) = 0x0900; /*Enables interrupt for Timer2 and SW2*/
+  IFSCLR(0) = 0x0900; /*Sets the Interrupt flag to 0.*/
+
+  T2CONSET = 0x08000;
+  enable_interrupt();
+  return;
+}
+
+void user_isr( void )
+{
+  if (IFS(0) & 0x100)
+  {
+
+
+  }
+
+  if((IFS(0) & 0x0800))
+  {
+
+  }
+
+  IFS(0) = 0;
+  return;
+}
+
 int main(void) {
 /* Set up peripheral bus clock */ //PLL output dividerat med 8??
 OSCCON &= ~0x180000;
@@ -85,7 +125,7 @@ while(1)
     while(gameOver == 0)
     {
 
-			
+
         if(eatenFood())
 				{
 					clearFood(); /*Tar bort maten*/

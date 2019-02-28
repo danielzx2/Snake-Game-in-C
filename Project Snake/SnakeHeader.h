@@ -49,7 +49,7 @@ typedef struct {
 } pixel;
 
 //The max body for snake
-pixel snake[50];
+pixel snake[100];
 pixel food[4];
 
 
