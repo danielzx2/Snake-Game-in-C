@@ -84,7 +84,9 @@ while(1)
 {
     while(gameOver == 0)
     {
-        if()
+
+			
+        if(eatenFood())
 				{
 					clearFood(); /*Tar bort maten*/
 					expandSnake();/*Gör att ormen växer. Kolla SnakeSnake för fulla funktionen*/
