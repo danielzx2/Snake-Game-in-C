@@ -5,10 +5,7 @@
 void *stdin, *stdout;
  /*int for later in the program*/
 int gameOver = 0;
-int is_left = 1;
-int is_right = 0;
-int is_up = 0;
-int is_down = 0;
+
 
 //Fetches the input from the 4 buttons in the i/o shield
 int getbtns(void)

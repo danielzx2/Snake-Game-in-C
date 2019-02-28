@@ -237,6 +237,60 @@ int eatenFood(void)
   }
 }
 
+void advanceSnake(int *is_left, int *is_right, int *is_up, int* is_down)
+{
+  int x;
+  int y;
+  int adv;
+  while(*is_left)
+  {
+    for(adv = 0; adv < SNAKE_LENGTH; adv++)
+    {
+      snake[adv].x = snake[adv].x + 1;
+      x = snake[adv].x;
+      y = snake[adv].y;
+
+      generatePixel(x, y);
+    }
+  }
+
+  while(*is_right)
+  {
+    for(adv = 0; adv < SNAKE_LENGTH; adv++)
+    {
+      snake[adv].x = snake[adv].x - 1;
+      x = snake[adv].x;
+      y = snake[adv].y;
+
+      generatePixel(x, y);
+    }
+  }
+
+  while(*is_up)
+  {
+    for(adv = 0; adv < SNAKE_LENGTH; adv++)
+    {
+      snake[adv].y = snake[adv].y - 1;
+      x = snake[adv].x;
+      y = snake[adv].y;
+
+      generatePixel(x, y);
+    }
+  }
+  while(*is_down)
+  {
+    for(adv = 0; adv < SNAKE_LENGTH; adv++)
+    {
+      snake[adv].y = snake[adv].y + 1;
+      x = snake[adv].x;
+      y = snake[adv].y;
+
+      generatePixel(x, y);
+    }
+  }
+  
+}
+
 int isgameover(int *over){
 	int i;
 	for(i = 0; i < 32; i++){
