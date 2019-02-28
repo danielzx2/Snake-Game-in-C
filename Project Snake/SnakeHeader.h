@@ -31,6 +31,11 @@
 char textbuffer[4][16];
 uint8_t snakeMap[512];
 
+int is_left = 1;
+int is_right = 0;
+int is_up = 0;
+int is_down = 0;
+
 int is_validPoint(int x, int y);
 void generatePixel(int x, int y);
 void cleanSnake(void);

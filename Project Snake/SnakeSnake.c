@@ -8,10 +8,7 @@ int tail = 7;
 srand(randi);
 
 /*Boolean values to determine directions*/
-int is_left = 1;
-int is_right = 0;
-int is_up = 0;
-int is_down = 0;
+
 
 int randomNumberGeneratorX(void)
 {
@@ -136,17 +133,17 @@ void go_up(void)
       {
         snake[u].x = snake[u].x + 1;
       }
-       
+
       if(is_right)
       {
         snake[u].x = snake[u].x - 1;
-      } 
+      }
     }
     x = snake[u].x;
     y = snake[u].y - 1;
 
     generatePixel(x, y);
-  } 
+  }
 }
 
 void go_down(void)
@@ -163,18 +160,18 @@ void go_down(void)
       {
         snake[d].x = snake[d].x + 1;
       }
-      
+
       if(is_right)
       {
         snake[d].x = snake[d].x - 1;
       }
     }
-    
+
     x = snake[d].x;
     y = snake[d].y + 1;
 
     generatePixel(x, y);
-  }  
+  }
 }
 
 void go_left(void)
@@ -224,7 +221,7 @@ void go_right(void)
         snake[r].y = snake[r].y + 1;
       }
     }
-    
+
     x = snake[r].x + 1;
     y = snake[r].y;
 
@@ -240,18 +237,20 @@ int eatenFood(void)
   }
 }
 
-void isgameover(int *over){
+int isgameover(int *over){
 	int i;
 	for(i = 0; i < 32; i++){
 		if(snake[i].x == 2 || snake[i].x == 126){
 			*over = 1;
-		 	return ;
+		 	return 1;
 		}
 	}
 	for(i = 0; i < 128; i++){
 		if(snake[i].y == 2 || snake[i].y == 30){
 			*over = 1;
-			return;
+			return 1;
 		}
+
+		return 0;
 	}
 }

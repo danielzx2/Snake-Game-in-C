@@ -108,7 +108,7 @@ while(1)
     while(gameOver == 0)
     {
 
-			while(getbtns == 8)
+			while(getbtns() == 8)
 			{
 				if(is_left)
 				{
@@ -139,7 +139,7 @@ while(1)
 				}
 			}
 
-			while(getbtns == 4)
+			while(getbtns() == 4)
 			{
 				if(is_left)
 				{
@@ -169,7 +169,7 @@ while(1)
 					is_down = 0;
 				}
 			}
-			
+
         if(eatenFood())
 				{
 					clearFood(); /*Tar bort maten*/
