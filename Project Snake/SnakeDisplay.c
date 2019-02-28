@@ -109,35 +109,6 @@ void display_update() {
 	}
 }
 
-/*
-int randomNumberGenerator(void)
-{
-	srand(randi);
-	int randomnumber = randi % 31;
-	return randomnumber;
-}
-
-void generateFood()
-{	int x = randomNumberGeneratorX();
-	int y = randomNumberGeneratorY();
-	int i;
-
-	food[0].x = x;
-	food[0].y = y;
-	food[1].x = x + 1;
-	food[1].y = y;
-	food[2].x = x;
-	food[2].y = y + 1;
-	food[3].x = x + 1;
-	food[3].y = y + 1;
-
-	int i;
-	for(i = 0; i < 4; i++)
-	{
-		food[i].ON = 1;
-	}
-}
-*/
 
 void clearFood()
 {

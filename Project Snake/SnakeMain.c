@@ -4,6 +4,10 @@
 void *stdin, *stdout;
  /*int for later in the program*/
 int gameOver = 0;
+int is_left = 1;
+int is_right = 0;
+int is_up = 0;
+int is_down = 0;
 
 uint8_t  wall[] = {
 0, 0, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252,
@@ -85,6 +89,67 @@ while(1)
     while(gameOver == 0)
     {
 
+			while(getbtns == 8)
+			{
+				if(is_left)
+				{
+					go_up();
+					is_up = 1;
+					is_left = 0;
+				}
+
+				if(is_right)
+				{
+					go_down();
+					is_down = 1;
+					is_right = 0;
+				}
+
+				if(is_up)
+				{
+					go_left();
+					is_left = 1;
+					is_up = 0;
+				}
+
+				if(is_down)
+				{
+					go_left();
+					is_left = 1;
+					is_down =	0;
+				}
+			}
+
+			while(getbtns == 4)
+			{
+				if(is_left)
+				{
+					go_down();
+					is_down = 1;
+					is_left = 0;
+				}
+
+				if(is_right)
+				{
+						go_up();
+						is_up = 1;
+						is_right = 0;
+				}
+
+				if(is_up)
+				{
+					go_right();
+					is_right = 1;
+					is_up = 0;
+				}
+
+				if(is_down)
+				{
+					go_right();
+					is_right = 1;
+					is_down = 0;
+				}
+			}
 			
         if(eatenFood())
 				{
