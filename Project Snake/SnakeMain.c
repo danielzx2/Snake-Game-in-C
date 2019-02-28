@@ -1,10 +1,8 @@
 #include <pic32mx.h>
 #include <stdint.h>
 #include "SnakeHeader.h"
-
 void *stdin, *stdout;
  /*int for later in the program*/
-int snakecount = 10; //starts with 10
 int gameOver = 0;
 
 
@@ -33,9 +31,8 @@ void labinit( void )
   IEC(0) = 0x0900; /*Enables interrupt for Timer2 and SW2*/
   IFSCLR(0) = 0x0900; /*Sets the Interrupt flag to 0.*/
 
-  asm volatile("ei");
   T2CONSET = 0x08000;
-
+  asm volatile("ei");
   return;
 }
 
@@ -43,7 +40,7 @@ void user_isr( void )
 {
   if (IFS(0) & 0x100)
   {
-    advanceSnake();
+    //movesnake
     isgameover(gameOver);
   }
 
@@ -57,7 +54,6 @@ void user_isr( void )
 }
 
 int main(void) {
-
 /* Set up peripheral bus clock */ //PLL output dividerat med 8??
 OSCCON &= ~0x180000;
 OSCCON |= 0x080000;
@@ -99,39 +95,41 @@ SnakeStart();
 generateFood();
 drawFrame();
 drawSnake();
+drawFood();
 sendData();
+
 
 while(1)
 {
     while(gameOver == 0)
     {
-      PORTE += 1;
+
 			while(getbtns() == 8)
 			{
 				if(is_left)
 				{
-					go_up(is_left, is_right);
+					go_up();
 					is_up = 1;
 					is_left = 0;
 				}
 
 				if(is_right)
 				{
-					go_down(is_left, is_right);
+					go_down();
 					is_down = 1;
 					is_right = 0;
 				}
 
 				if(is_up)
 				{
-					go_left(is_up, is_down);
+					go_left();
 					is_left = 1;
 					is_up = 0;
 				}
 
 				if(is_down)
 				{
-					go_left(is_up, is_down);
+					go_left();
 					is_left = 1;
 					is_down =	0;
 				}
@@ -176,9 +174,6 @@ while(1)
     }
 
 }
-
-
-
 for(;;) ;
 return 0;
 }
