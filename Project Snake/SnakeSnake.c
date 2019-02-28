@@ -4,18 +4,20 @@
 void *stdin, *stdout;
 
 int randi = 47389623;
+int tail = 7;
+srand(randi);
 
 int randomNumberGeneratorX(void)
 {
-  srand(randi);
 	int randomnumber = rand() % 127;
+  randi++;
 	return randomnumber;
 }
 
 int randomNumberGeneratorY(void)
 {
-	srand(randi);
-	int randomnumber = randi % 31;
+	int randomnumber = rand() % 31;
+  randi++;
 	return randomnumber;
 }
 
@@ -107,15 +109,23 @@ void drawSnake()
   }
  }
 
- void drawFood()
- {
- 	int x;
- 	int y;
- 	int k;
- 	for(k = 0; x < FOOD_VECTOR_SIZE; x++)
- 	{
- 		x = food[k].x;
- 		y = food[k].y;
- 		generatePixel(x, y);
- 	}
- }
+void expandSnake()
+{
+  int newbody = tail + 1;
+  int x;
+  int y;
+
+  snake[newbody].x = snake[tail].x - 1;
+  snake[newbody].y = snake[tail].y;
+  drawSnake();
+
+  tail++;
+}
+
+int eatenFood()
+{
+  if(snake[0].x == food[1].x | snake[0].x == food[2].x | snake[0].x == food[3].x | snake[0].x == food[4].x | snake[0].y == food[1].y | snake[0].x == food[2].y | snake[0].x == food[3].y | snake[0].x == food[4].y)
+  {
+    return 1;
+  }
+}

@@ -3,8 +3,6 @@
 #include "SnakeHeader.h"
 void *stdin, *stdout;
 
-int randi = 47389623;
-
 #define DISPLAY_VDD_PORT PORTF
 #define DISPLAY_VDD_MASK 0x40
 #define DISPLAY_VBATT_PORT PORTF
@@ -35,12 +33,6 @@ void sendData(void) {
 		spi_send_recv(snakeMap[i]);
 	}
 }
-
-int randomNumberGeneratorX(void)
-{
-    srand(randi);
-	int randomnumber = rand() % 127;
-	return randomnumber;
 
 void display_string(int line, char *s) {
 	int i;

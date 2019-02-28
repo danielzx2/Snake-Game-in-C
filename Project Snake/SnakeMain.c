@@ -1,8 +1,9 @@
 #include <pic32mx.h>
 #include <stdint.h>
 #include "SnakeHeader.h"
-#include <stdlib.h>
-
+void *stdin, *stdout;
+ /*int for later in the program*/
+int gameOver = 0;
 
 uint8_t  wall[] = {
 0, 0, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252,
@@ -83,11 +84,12 @@ while(1)
 {
     while(gameOver == 0)
     {
-        if(snake[0].x == food[1].x | snake[0].x == food[2].x | snake[0].x == food[3].x | snake[0].x == food[4].x | snake[0].y == food[1].y | snake[0].x == food[2].y | snake[0].x == food[3].y | snake[0].x == food[4].y)
+        if()
 				{
-					clearFood();
-					
+					clearFood(); /*Tar bort maten*/
+					expandSnake();/*Gör att ormen växer. Kolla SnakeSnake för fulla funktionen*/
 				}
+
     }
 
 }
