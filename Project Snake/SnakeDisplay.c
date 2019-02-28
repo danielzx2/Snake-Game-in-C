@@ -33,7 +33,7 @@ void sendData(void) {
 		spi_send_recv(snakeMap[i]);
 	}
 }
-
+/*
 void display_string(int line, char *s) {
 	int i;
 	if(line < 0 || line >= 4)
@@ -108,7 +108,7 @@ void display_update() {
 		}
 	}
 }
-
+*/
 /*
 int randomNumberGenerator(void)
 {
