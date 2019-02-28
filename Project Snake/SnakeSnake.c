@@ -8,7 +8,10 @@ int tail = 7;
 srand(randi);
 
 /*Boolean values to determine directions*/
-
+int is_left = 1;
+int is_right = 0;
+int is_up = 0;
+int is_down = 0;
 
 int randomNumberGeneratorX(void)
 {
