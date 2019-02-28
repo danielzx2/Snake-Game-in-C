@@ -20,8 +20,7 @@ int randomNumberGeneratorX(void)
 	return randomnumber;
 }
 
-int randomNumberGeneratorY(void)
-{
+int randomNumberGeneratorY(void){
 	int randomnumber = rand() % 31;
   randi++;
 	return randomnumber;
@@ -42,8 +41,8 @@ void SnakeStart(){
   }
 }
 
-void generateFood()
-{	int x = randomNumberGeneratorX();
+void generateFood(){
+	int x = randomNumberGeneratorX();
 	int y = randomNumberGeneratorY();
 	int i;
 
@@ -62,13 +61,11 @@ void generateFood()
 	}
 }
 
-void drawFood()
-{
+void drawFood(){
 	int x;
 	int y;
 	int k;
-	for(k = 0; x < FOOD_VECTOR_SIZE; x++)
-	{
+	for(k = 0; x < FOOD_VECTOR_SIZE; x++){
 		x = food[k].x;
 		y = food[k].y;
 
@@ -76,22 +73,19 @@ void drawFood()
 	}
 }
 
-void drawFrame()
-{
+void drawFrame(){
   int i;
-  for(i = 0; i < 128; i++)
-  {
-    generatePixel(i, 0);
+  for(i = 0; i < 128; i++){
+    generatePixel(i, 2);
     generatePixel(i, 1);
 
     generatePixel(i, 30);
     generatePixel(i, 31);
   }
 
-  for(i = 0; i < 32; i++)
-  {
-    generatePixel(0, i);
+  for(i = 0; i < 32; i++){
     generatePixel(1, i);
+		generatePixel(2, i);
 
     generatePixel(126, i);
     generatePixel(127, i);
@@ -244,4 +238,20 @@ int eatenFood(void)
   {
     return 1;
   }
+}
+
+void isgameover(int *over){
+	int i;
+	for(i = 0; i < 32; i++){
+		if(snake[i].x == 2 || snake[i].x == 126){
+			*over = 1;
+		 	return ;
+		}
+	}
+	for(i = 0; i < 128; i++){
+		if(snake[i].y == 2 || snake[i].y == 30){
+			*over = 1;
+			return;
+		}
+	}
 }
