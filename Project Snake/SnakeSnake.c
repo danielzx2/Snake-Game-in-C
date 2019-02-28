@@ -3,22 +3,21 @@
 #include "SnakeHeader.h"
 void *stdin, *stdout;
 
-int randi = 47389623;
+int randi = 234234;
 int tail = 7;
-srand(randi);
+srand(int(randi));
 
 /*Boolean values to determine directions*/
 
-
 int randomNumberGeneratorX(void)
 {
-	int randomnumber = rand() % 127;
+	int randomnumber = rand() % 126;
   randi++;
 	return randomnumber;
 }
 
 int randomNumberGeneratorY(void){
-	int randomnumber = rand() % 31;
+	int randomnumber = rand() % 30;
   randi++;
 	return randomnumber;
 }
@@ -38,11 +37,55 @@ void SnakeStart(){
   }
 }
 
+void advanceSnake(int *is_left, int *is_right, int *is_up, int *is_down)
+{
+  int x;
+  int y;
+  int adv;
+  while(*is_left)
+  {
+    for(adv = 0; adv < SNAKE_LENGTH; adv++)
+    {
+      snake[adv].x = snake[adv].x + 1;
+      x = snake[adv].x;
+      y = snake[adv].y;
+
+      generatePixel(x, y);
+    }
+  }
+
+  while(*is_right)
+  {
+    for(adv = 0; adv < SNAKE_LENGTH; adv++)
+    {
+      snake[adv].x = snake[adv].x - 1;
+      x = snake[adv].x;
+      y = snake[adv].y;
+
+      generatePixel(x, y);
+    }
+  }
+
+}
+
+void drawFood(){
+	int x;
+	int y;
+	int k;
+	for(k = 0; k < FOOD_VECTOR_SIZE; k++){
+		x = food[k].x;
+		y = food[k].y;
+
+		generatePixel(x, y);
+	}
+}
+
 void generateFood(){
-	int x = randomNumberGeneratorX();
-	int y = randomNumberGeneratorY();
+	int x = 80;
+	int y = 20;
 	int i;
 
+	
 	food[0].x = x;
 	food[0].y = y;
 	food[1].x = x + 1;
@@ -55,19 +98,9 @@ void generateFood(){
 	for(i = 0; i < 4; i++)
 	{
 		food[i].ON = 1;
-	}
-}
 
-void drawFood(){
-	int x;
-	int y;
-	int k;
-	for(k = 0; x < FOOD_VECTOR_SIZE; x++){
-		x = food[k].x;
-		y = food[k].y;
-
-		generatePixel(x, y);
 	}
+	drawFood();
 }
 
 void drawFrame(){
@@ -111,7 +144,6 @@ void expandSnake(void)
   int newbody = tail + 1;
   int x;
   int y;
-
   snake[newbody].x = snake[tail].x - 1;
   snake[newbody].y = snake[tail].y;
   drawSnake();
@@ -119,7 +151,7 @@ void expandSnake(void)
   tail++;
 }
 
-void go_up(void)
+void go_up(int *is_left, int *is_right)
 {
   int x;
   int y;
@@ -129,12 +161,12 @@ void go_up(void)
   {
     while (snake[u].x != turnPoint)
     {
-      if(is_left)
+      if(*is_left)
       {
         snake[u].x = snake[u].x + 1;
       }
 
-      if(is_right)
+      if(*is_right)
       {
         snake[u].x = snake[u].x - 1;
       }
@@ -146,7 +178,7 @@ void go_up(void)
   }
 }
 
-void go_down(void)
+void go_down(int *is_left, int *is_right)
 {
   int x;
   int y;
@@ -156,12 +188,12 @@ void go_down(void)
   {
     while(snake[d].x != turnPoint)
     {
-      if(is_left)
+      if(*is_left)
       {
         snake[d].x = snake[d].x + 1;
       }
 
-      if(is_right)
+      if(*is_right)
       {
         snake[d].x = snake[d].x - 1;
       }
@@ -174,7 +206,7 @@ void go_down(void)
   }
 }
 
-void go_left(void)
+void go_left(int *is_up, int *is_down)
 {
   int x;
   int y;
@@ -184,12 +216,12 @@ void go_left(void)
   {
     while(snake[l].y != turnPoint)
     {
-      if(is_up)
+      if(*is_up)
       {
         snake[l].y = snake[l].y - 1;
       }
 
-      if(is_down)
+      if(*is_down)
       {
         snake[l].y = snake[l].y + 1;
       }
@@ -201,7 +233,7 @@ void go_left(void)
   }
 }
 
-void go_right(void)
+void go_right(int *is_up, int *is_down)
 {
   int r;
   int x;
@@ -211,12 +243,12 @@ void go_right(void)
   {
     while(snake[r].y != turnPoint)
     {
-      if(is_up)
+      if(*is_up)
       {
         snake[r].y = snake[r].y - 1;
       }
 
-      if(is_down)
+      if(*is_down)
       {
         snake[r].y = snake[r].y + 1;
       }

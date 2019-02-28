@@ -118,7 +118,6 @@ void clearFood()
 		food[g].y = 0;
 		food[g].ON = 0;
 	}
-
 }
 
 
