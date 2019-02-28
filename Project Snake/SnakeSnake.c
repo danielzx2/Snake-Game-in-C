@@ -21,7 +21,7 @@ int randomNumberGeneratorY(void)
 
 void SnakeStart(){
   int i;
-  for(i=0; i < 8; i++){
+  for(i=0; i < SNAKE_LENGTH; i++){
       snake[i].x = 0;
       snake[i].y = 0;
       snake[i].ON = 0;
@@ -71,27 +71,32 @@ void drawFood()
 void drawFrame()
 {
   int i;
-  for(i = 0; i < 31; i++)
+  for(i = 0; i < 128; i++)
   {
+    generatePixel(i, 0);
+    generatePixel(i, 1);
 
-    //generatePixel(0, i);
-    //generatePixel(127, i);
+    generatePixel(i, 30);
+    generatePixel(i, 31);
   }
 
-  for(i = 0; i < 127; i++)
+  for(i = 0; i < 32; i++)
   {
-    generatePixel(i, 7);
-    //generatePixel(i, 31);
+    generatePixel(0, i);
+    generatePixel(1, i);
 
+    generatePixel(126, i);
+    generatePixel(127, i);
   }
 }
+
 
 void drawSnake()
 {
   int x;
   int y;
   int i;
-  for(i = 0; i < SNAKEMAP_LENGTH; i++)
+  for(i = 0; i < SNAKE_LENGTH; i++)
   {
     if(snake[i].ON == 1)
     {
@@ -100,4 +105,17 @@ void drawSnake()
       generatePixel(x, y);
     }
   }
+ }
+
+ void drawFood()
+ {
+ 	int x;
+ 	int y;
+ 	int k;
+ 	for(k = 0; x < FOOD_VECTOR_SIZE; x++)
+ 	{
+ 		x = food[k].x;
+ 		y = food[k].y;
+ 		generatePixel(x, y);
+ 	}
  }
