@@ -1,7 +1,9 @@
 #include <stdint.h>
 #include <pic32mx.h>
 #include "SnakeHeader.h"
-#include <stdlib.h>
+void *stdin, *stdout;
+
+int randi = 47389623;
 
 void delay(int cyc) {
 	int i;
@@ -26,23 +28,22 @@ void sendData(void) {
 
 int randomNumberGeneratorX(void)
 {
-	int n;
-	int random;
-	int randomnumber = (random ^ n) % 127;
+    srand(randi);
+	int randomnumber = rand() % 127;
 	return randomnumber;
 }
 
 int randomNumberGeneratorY(void)
 {
-	int m;
-	int random;
-	int randomnumber = (random ^ m) % 31;
+	srand(randi);
+	int randomnumber = randi % 31;
 	return randomnumber;
 }
 
 void generateFood()
 {	int x = randomNumberGeneratorX();
 	int y = randomNumberGeneratorY();
+	int i;
 
 	food[0].x = x;
 	food[0].y = y;
@@ -53,24 +54,22 @@ void generateFood()
 	food[3].x = x + 1;
 	food[3].y = y + 1;
 
-	for(int i = 0; i < 4; i++)
+	for(i = 0; i < 4; i++)
 	{
 		food[i].ON = 1;
 	}
 }
 
-void drawFood()
+void clearFood()
 {
-	int x;
-	int y;
-	int k;
-	for(k = 0; x < FOOD_VECTOR_SIZE; x++)
+	int g;
+	for(g = 0; g < 4; g++)
 	{
-		x = food[k].x;
-		y = food[k].y;
-
-		generatePixel(x, y);
+		food[g].x = 0;
+		food[g].y = 0;
+		food[g].ON = 0;
 	}
+	
 }
 
 int is_validPoint(int x, int y)/*Checks if the appointed coordinate is an actual point on the display.*/

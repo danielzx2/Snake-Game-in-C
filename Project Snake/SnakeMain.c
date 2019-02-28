@@ -319,25 +319,23 @@ string_update();
 //timer??
 cleanSnake();
 SnakeStart();
-//generateFood();
+generateFood();
 drawFrame();
 drawSnake();
+drawFood();
 sendData();
 
 
 while(1)
 {
-    if(!(gameOver == 1))
+    while(gameOver == 0)
     {
-        //drawFood();
+        if(snake[0].x == food[1].x | snake[0].x == food[2].x | snake[0].x == food[3].x | snake[0].x == food[4].x | snake[0].y == food[1].y | snake[0].x == food[2].y | snake[0].x == food[3].y | snake[0].x == food[4].y)
+				{
+					clearFood();
+					
+				}
     }
-
-    else if(gameOver == 1)
-    {
-
-
-    }
-
 
 }
 

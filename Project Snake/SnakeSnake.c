@@ -1,12 +1,23 @@
 #include <stdint.h>
 #include <pic32mx.h>
 #include "SnakeHeader.h"
+void *stdin, *stdout;
 
-/*int randomNumberGenerator(void)
+int randi = 47389623;
+
+int randomNumberGeneratorX(void)
 {
+  srand(randi);
 	int randomnumber = rand() % 127;
 	return randomnumber;
-}*/
+}
+
+int randomNumberGeneratorY(void)
+{
+	srand(randi);
+	int randomnumber = randi % 31;
+	return randomnumber;
+}
 
 void SnakeStart(){
   int i;
@@ -23,10 +34,10 @@ void SnakeStart(){
   }
 }
 
-/*
 void generateFood()
-{	int x = randomNumberGenerator;
-	int y = randomNumberGenerator;
+{	int x = randomNumberGeneratorX();
+	int y = randomNumberGeneratorY();
+	int i;
 
 	food[0].x = x;
 	food[0].y = y;
@@ -37,12 +48,11 @@ void generateFood()
 	food[3].x = x + 1;
 	food[3].y = y + 1;
 
-	int i;
 	for(i = 0; i < 4; i++)
 	{
 		food[i].ON = 1;
 	}
- }*/
+}
 
 void drawFood()
 {
@@ -53,6 +63,7 @@ void drawFood()
 	{
 		x = food[k].x;
 		y = food[k].y;
+
 		generatePixel(x, y);
 	}
 }
