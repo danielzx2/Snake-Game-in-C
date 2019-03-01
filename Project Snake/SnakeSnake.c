@@ -312,6 +312,7 @@ int eatenFood(void)
 		}
 }
 
+
 int isgameover(void)
 {
 		if(snake[0].x == 2 || snake[0].x == 125){

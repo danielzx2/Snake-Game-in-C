@@ -1,7 +1,6 @@
 #include <pic32mx.h>
 #include <stdint.h>
 #include "SnakeHeader.h"
-
 void *stdin, *stdout;
  /*int for later in the program*/
 int gameOver = 0;
@@ -43,9 +42,8 @@ void labinit( void )
   IEC(0) = 0x0900; /*Enables interrupt for Timer2 and SW2*/
   IFSCLR(0) = 0x0900; /*Sets the Interrupt flag to 0.*/
 
-  asm volatile("ei");
   T2CONSET = 0x08000;
-
+  asm volatile("ei");
   return;
 }
 
@@ -69,7 +67,6 @@ void user_isr( void )
 }
 
 int main(void) {
-
 /* Set up peripheral bus clock */ //PLL output dividerat med 8??
 OSCCON &= ~0x180000;
 OSCCON |= 0x080000;
@@ -108,10 +105,14 @@ display_init();
 labinit();
 SnakeStart();
 generateFood();
+
+
 sendData();
+
 
 while(1)
 {
+
       cleanSnake();
       drawFrame();
       drawSnake();
@@ -126,6 +127,7 @@ while(1)
       }
 
 }
+
 
 for(;;) ;
 return 0;
