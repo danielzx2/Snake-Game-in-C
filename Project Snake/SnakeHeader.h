@@ -5,8 +5,8 @@
 #include <stdint.h>
 
 #define SnakeBody 100
-#define STARTY 21
-#define STARTX 70
+#define STARTY 16
+#define STARTX 50
 #define SNAKE_LENGTH 60
 #define FOOD_VECTOR_SIZE 4
 #define SNAKEMAP_SIZE 512

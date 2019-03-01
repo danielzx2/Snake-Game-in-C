@@ -4,13 +4,20 @@
 
 void *stdin, *stdout;
  /*int for later in the program*/
-int snakecount = 10; //starts with 10
 int gameOver = 0;
+
+/*Booleans för deras nurvarande rikning*/
 int is_left = 1;
 int is_right = 0;
 int is_up = 0;
 int is_down = 0;
 
+int *left = &is_left;
+int *right = &is_right;
+int *up = &is_up;
+int *down = &is_down;
+
+int adv;
 //Fetches the input from the 4 buttons in the i/o shield
 int getbtns(void)
 {
@@ -46,15 +53,17 @@ void user_isr( void )
 {
   if (IFS(0) & 0x100)
   {
-    advanceSnake();
-    isgameover(gameOver);
+    if(gameOver == 0)
+    {
+      advanceSnake(left, right, up, down);
   }
+}
 
   if((IFS(0) & 0x0800))
   {
-
   }
-
+  PORTE += 1;
+  gameOver = isgameover();
   IFS(0) = 0;
   return;
 }
@@ -97,90 +106,26 @@ SPI2CONSET = 0x8000;
 
 display_init();
 labinit();
-
 SnakeStart();
 generateFood();
-drawFrame();
-drawSnake();
 sendData();
 
 while(1)
 {
-    while(gameOver == 0)
-    {
-      PORTE += 1;
-			while(getbtns() == 8)
-			{
-				if(is_left)
-				{
-					go_up(is_left, is_right);
-					is_up = 1;
-					is_left = 0;
-				}
+      cleanSnake();
+      drawFrame();
+      drawSnake();
+      drawFood();
+      sendData();
 
-				if(is_right)
-				{
-					go_down(is_left, is_right);
-					is_down = 1;
-					is_right = 0;
-				}
 
-				if(is_up)
-				{
-					go_left(is_up, is_down);
-					is_left = 1;
-					is_up = 0;
-				}
-
-				if(is_down)
-				{
-					go_left(is_up, is_down);
-					is_left = 1;
-					is_down =	0;
-				}
-			}
-
-			while(getbtns() == 4)
-			{
-				if(is_left)
-				{
-					go_down();
-					is_down = 1;
-					is_left = 0;
-				}
-
-				if(is_right)
-				{
-						go_up();
-						is_up = 1;
-						is_right = 0;
-				}
-
-				if(is_up)
-				{
-					go_right();
-					is_right = 1;
-					is_up = 0;
-				}
-
-				if(is_down)
-				{
-					go_right();
-					is_right = 1;
-					is_down = 0;
-				}
-			}
-
-        if(eatenFood())
-				{
-					clearFood(); /*Tar bort maten*/
-					expandSnake();/*Gör att ormen växer. Kolla SnakeSnake för fulla funktionen*/
-				}
-    }
+      if(eatenFood() == 1)
+      {
+        clearFood(); // Tar bort maten
+        expandSnake();
+      }
 
 }
-
-
 
 for(;;) ;
 return 0;

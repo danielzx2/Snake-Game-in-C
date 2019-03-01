@@ -4,7 +4,10 @@
 void *stdin, *stdout;
 
 int randi = 234234;
-int tail = 7;
+int tail = 9;
+
+/*Booleans för deras kommande riktningar*/
+
 srand(int(randi));
 
 /*Boolean values to determine directions*/
@@ -30,49 +33,113 @@ void SnakeStart(){
       snake[i].ON = 0;
   }
 
-  for(i=0; i < 8; i++){
-      snake[i].x = STARTX + i;
+  for(i=0; i < 10; i++){
+      snake[i].x = STARTX - i;
       snake[i].y = STARTY;
       snake[i].ON = 1;
   }
 }
 
-void advanceSnake(int *is_left, int *is_right, int *is_up, int *is_down)
+void advanceSnake(int* is_left, int* is_right, int* is_up, int* is_down)
 {
   int x;
   int y;
   int adv;
-  while(*is_left)
-  {
-    for(adv = 0; adv < SNAKE_LENGTH; adv++)
-    {
-      snake[adv].x = snake[adv].x + 1;
-      x = snake[adv].x;
-      y = snake[adv].y;
 
-      generatePixel(x, y);
-    }
-  }
+	for(adv = tail; adv > 0; adv--)
+	{
+		snake[adv] = snake[adv-1];
+	}
 
-  while(*is_right)
-  {
-    for(adv = 0; adv < SNAKE_LENGTH; adv++)
-    {
-      snake[adv].x = snake[adv].x - 1;
-      x = snake[adv].x;
-      y = snake[adv].y;
+	for(adv = SNAKE_LENGTH; adv > tail; adv--)
+	{
+		snake[adv].ON = 0;
+	}
 
-      generatePixel(x, y);
-    }
-  }
+
+
+	if(getbtns() == 8)
+	{
+		PORTE += 1;
+
+		if(*is_left)
+		{
+			snake[0].y = snake[0].y - 1;
+			*is_up = 1;
+			*is_left = 0;
+		}
+
+		if(*is_right)
+		{
+			snake[0].y = snake[0].y + 1;
+			*is_down = 1;
+			*is_right = 0;
+		}
+
+		if(*is_up)
+		{
+			snake[0].x = snake[0].x - 1;
+			*is_left = 1;
+			*is_up = 0;
+		}
+
+		if(*is_down)
+		{
+			snake[0].x = snake[0].x + 1;
+			*is_left = 1;
+			*is_down =	0;
+		}
+	}
+
+	else if(getbtns() == 4)
+	{
+		if(*is_left)
+		{
+			snake[0].y = snake[0].y + 1;
+			*is_down = 1;
+			*is_left = 0;
+		}
+
+		if(*is_right)
+		{
+				snake[0].y = snake[0].y - 1;
+				*is_up = 1;
+				*is_right = 0;
+		}
+
+		if(*is_up)
+		{
+			snake[0].x = snake[0].x + 1;
+			*is_left = 1;
+			*is_up = 0;
+		}
+
+		if(*is_down)
+		{
+			snake[0].x = snake[0].x - 1;
+			*is_right = 1;
+			*is_down = 0;
+		}
+	}
+
+	if(*is_left)
+		snake[0].x = snake[0].x + 1;
+	if(*is_right)
+		snake[0].x = snake[0].x - 1;
+	if(*is_up)
+		snake[0].y = snake[0].y - 1;
+	if(*is_down)
+		snake[0].y = snake[0].y + 1;
 
 }
 
-void drawFood(){
+void drawFood()
+{
 	int x;
 	int y;
 	int k;
-	for(k = 0; k < FOOD_VECTOR_SIZE; k++){
+	for(k = 0; k < FOOD_VECTOR_SIZE; k++)
+	{
 		x = food[k].x;
 		y = food[k].y;
 
@@ -81,11 +148,10 @@ void drawFood(){
 }
 
 void generateFood(){
-	int x = 80;
-	int y = 20;
+	int x = 60;
+	int y = 15;
 	int i;
 
-	
 	food[0].x = x;
 	food[0].y = y;
 	food[1].x = x + 1;
@@ -142,147 +208,122 @@ void drawSnake(void)
 void expandSnake(void)
 {
   int newbody = tail + 1;
-  int x;
-  int y;
   snake[newbody].x = snake[tail].x - 1;
   snake[newbody].y = snake[tail].y;
+	snake[newbody].ON = 1;
   drawSnake();
 
   tail++;
 }
 
-void go_up(int *is_left, int *is_right)
+/*
+while (snake[u].x != turnPoint)
 {
-  int x;
-  int y;
-  int u;
-  int turnPoint = snake[0].x;
-  for(u = 0; u < SNAKE_LENGTH; u++)
-  {
-    while (snake[u].x != turnPoint)
-    {
-      if(*is_left)
-      {
-        snake[u].x = snake[u].x + 1;
-      }
+	if(*is_left)
+	{
+		snake[u].x = snake[u].x + 1;
+	}
 
-      if(*is_right)
-      {
-        snake[u].x = snake[u].x - 1;
-      }
-    }
-    x = snake[u].x;
-    y = snake[u].y - 1;
-
-    generatePixel(x, y);
-  }
+	if(*is_right)
+	{
+		snake[u].x = snake[u].x - 1;
+	}
 }
 
-void go_down(int *is_left, int *is_right)
+x = snake[u].x;
+y = snake[u].y - 1;
+*/
+
+
+void go_up()
 {
-  int x;
-  int y;
-  int d;
-  int turnPoint = snake[0].x;
-  for(d = 0; d < SNAKE_LENGTH; d++)
+	int u;
+  for(u = SNAKE_LENGTH; u > 0; u--)
   {
-    while(snake[d].x != turnPoint)
-    {
-      if(*is_left)
-      {
-        snake[d].x = snake[d].x + 1;
-      }
-
-      if(*is_right)
-      {
-        snake[d].x = snake[d].x - 1;
-      }
-    }
-
-    x = snake[d].x;
-    y = snake[d].y + 1;
-
-    generatePixel(x, y);
+    snake[u] = snake[u-1];
   }
+	snake[0].y = snake[1].y - 1;
+	snake[0].x = snake[1].x;
 }
+
+void go_down()
+{
+	int u;
+	for(u = SNAKE_LENGTH; u > 0; u--)
+  {
+    snake[u].x = snake[u-1].x;
+		snake[u].y = snake[u-1].y;
+  }
+	snake[0].y = snake[1].y + 1;
+	snake[0].x = snake[1].x;
+}
+
 
 void go_left(int *is_up, int *is_down)
 {
-  int x;
-  int y;
-  int l;
-  int turnPoint = snake[0].y;
-  for(l = 0; l < SNAKE_LENGTH; l++)
+	int u;
+	for(u = SNAKE_LENGTH; u > 0; u--)
   {
-    while(snake[l].y != turnPoint)
-    {
-      if(*is_up)
-      {
-        snake[l].y = snake[l].y - 1;
-      }
-
-      if(*is_down)
-      {
-        snake[l].y = snake[l].y + 1;
-      }
-    }
-    x = snake[l].x - 1;
-    y = snake[l].y;
-
-    generatePixel(x, y);
+    snake[u].x = snake[u-1].x;
+		snake[u].y = snake[u-1].y;
   }
+	snake[0].y = snake[1].y;
+	snake[0].x = snake[1].x + 1;
 }
 
 void go_right(int *is_up, int *is_down)
 {
-  int r;
-  int x;
-  int y;
-  int turnPoint = snake[0].y;
-  for(r = 0; r < SNAKE_LENGTH; r++)
+	int u;
+	for(u = SNAKE_LENGTH; u > 0; u--)
   {
-    while(snake[r].y != turnPoint)
-    {
-      if(*is_up)
-      {
-        snake[r].y = snake[r].y - 1;
-      }
-
-      if(*is_down)
-      {
-        snake[r].y = snake[r].y + 1;
-      }
-    }
-
-    x = snake[r].x + 1;
-    y = snake[r].y;
-
-    generatePixel(x, y);
+    snake[u].x = snake[u-1].x;
+		snake[u].y = snake[u-1].y;
   }
+	snake[0].y = snake[1].y;
+	snake[0].x = snake[1].x - 1;
 }
+
 
 int eatenFood(void)
 {
-  if(snake[0].x == food[1].x | snake[0].x == food[2].x | snake[0].x == food[3].x | snake[0].x == food[4].x | snake[0].y == food[1].y | snake[0].x == food[2].y | snake[0].x == food[3].y | snake[0].x == food[4].y)
+  if(snake[0].x == food[0].x && snake[0].y == food[0].y)
   {
     return 1;
   }
+
+	if (snake[0].x == food[1].x && snake[0].y == food[1].y)
+	 {
+		return 1;
+	 }
+
+	 if (snake[0].x == food[2].x && snake[0].y == food[2].y)
+	 {
+	 	return 1;
+	 }
+
+	 if (snake[0].x == food[3].x && snake[0].y == food[3].y)
+	  {
+	 	return 1;
+	  }
+
+		else
+		{
+			return 0;
+		}
 }
 
-int isgameover(int *over){
-	int i;
-	for(i = 0; i < 32; i++){
-		if(snake[i].x == 2 || snake[i].x == 126){
-			*over = 1;
-		 	return 1;
-		}
-	}
-	for(i = 0; i < 128; i++){
-		if(snake[i].y == 2 || snake[i].y == 30){
-			*over = 1;
+int isgameover(void)
+{
+		if(snake[0].x == 2 || snake[0].x == 125){
 			return 1;
 		}
 
-		return 0;
-	}
+		if(snake[0].y == 2 || snake[0].y == 29){
+			return 1;
+		}
+
+		else
+		{
+			return 0;
+		}
 }
