@@ -5,7 +5,7 @@ void *stdin, *stdout;
  /*int for later in the program*/
 int gameOver = 0;
 
-/*Booleans för deras nurvarande rikning*/
+/*Booleans för deras nurvarande riktning*/
 int is_left = 1;
 int is_right = 0;
 int is_up = 0;
@@ -96,7 +96,7 @@ SPI2BRG = 4;					//Baud rate = 4 (Ska dividera SCK)
 /* Clear SPIROV*/
 SPI2STATCLR &= ~0x40;	//Ny data har tagits emot men slängs bort, programmer har ej läst förra datan (liknar IFS(0) )
 /* Set CKP = 1, MSTEN = 1; */
-SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising edge
+SPI2CON |= 0x60;	//D.v.s enheten blir mastern och data utbyte sker vid rising edge
 
 /* Turn on SPI */
 SPI2CONSET = 0x8000;

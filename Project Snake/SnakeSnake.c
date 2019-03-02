@@ -64,61 +64,20 @@ void advanceSnake(int* is_left, int* is_right, int* is_up, int* is_down)
 
 		if(*is_left)
 		{
-			snake[0].y = snake[0].y - 1;
+			go_up();
 			*is_up = 1;
 			*is_left = 0;
-		}
-
-		if(*is_right)
-		{
-			snake[0].y = snake[0].y + 1;
-			*is_down = 1;
-			*is_right = 0;
-		}
-
-		if(*is_up)
-		{
-			snake[0].x = snake[0].x - 1;
-			*is_left = 1;
-			*is_up = 0;
-		}
-
-		if(*is_down)
-		{
-			snake[0].x = snake[0].x + 1;
-			*is_left = 1;
-			*is_down =	0;
 		}
 	}
 
 	else if(getbtns() == 4)
 	{
+    PORTE += 1;
 		if(*is_left)
 		{
-			snake[0].y = snake[0].y + 1;
+			go_down();
 			*is_down = 1;
 			*is_left = 0;
-		}
-
-		if(*is_right)
-		{
-				snake[0].y = snake[0].y - 1;
-				*is_up = 1;
-				*is_right = 0;
-		}
-
-		if(*is_up)
-		{
-			snake[0].x = snake[0].x + 1;
-			*is_left = 1;
-			*is_up = 0;
-		}
-
-		if(*is_down)
-		{
-			snake[0].x = snake[0].x - 1;
-			*is_right = 1;
-			*is_down = 0;
 		}
 	}
 
@@ -216,25 +175,6 @@ void expandSnake(void)
   tail++;
 }
 
-/*
-while (snake[u].x != turnPoint)
-{
-	if(*is_left)
-	{
-		snake[u].x = snake[u].x + 1;
-	}
-
-	if(*is_right)
-	{
-		snake[u].x = snake[u].x - 1;
-	}
-}
-
-x = snake[u].x;
-y = snake[u].y - 1;
-*/
-
-
 void go_up()
 {
 	int u;
@@ -242,7 +182,7 @@ void go_up()
   {
     snake[u] = snake[u-1];
   }
-	snake[0].y = snake[1].y - 1;
+	snake[0].y = snake[1].y;
 	snake[0].x = snake[1].x;
 }
 
@@ -254,7 +194,7 @@ void go_down()
     snake[u].x = snake[u-1].x;
 		snake[u].y = snake[u-1].y;
   }
-	snake[0].y = snake[1].y + 1;
+	snake[0].y = snake[1].y;
 	snake[0].x = snake[1].x;
 }
 
