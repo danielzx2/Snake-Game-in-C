@@ -1,37 +1,17 @@
+//Denna fill hanterar ormen i spelet och instansieringen av mat
+
 #include <stdint.h>
 #include <pic32mx.h>
 #include "SnakeHeader.h"
 void *stdin, *stdout;
 
-int randi = 234234;
+/* slumpvalt värde för funktionen rand(), tail räknar ormens totala segment */
+int randi = 734;
 int tail = 9;
 
-/*Booleans för deras kommande riktningar*/
-
-srand(int(randi));
-
-/*Boolean values to determine directions*/
-
-int randomNumberGeneratorX(void)
-{
-	int randomnumber = rand() % 126;
-  randi++;
-	return randomnumber;
-}
-
-int randomNumberGeneratorY(void){
-	int randomnumber = rand() % 30;
-  randi++;
-	return randomnumber;
-}
-
+/* Skapar en ny orm */
 void SnakeStart(){
   int i;
-  for(i=0; i < SNAKE_LENGTH; i++){
-      snake[i].x = 0;
-      snake[i].y = 0;
-      snake[i].ON = 0;
-  }
 
   for(i=0; i < 10; i++){
       snake[i].x = STARTX - i;
@@ -40,58 +20,89 @@ void SnakeStart(){
   }
 }
 
+/* Får ormen att börja gå, parametrarna beskriver ormens färdriktning
+   och används för att bestämma den riktning ormen kommer färda. */
 void advanceSnake(int* is_left, int* is_right, int* is_up, int* is_down)
 {
+  randi++;
   int x;
   int y;
   int adv;
 
 	for(adv = tail; adv > 0; adv--)
-	{
 		snake[adv] = snake[adv-1];
-	}
 
 	for(adv = SNAKE_LENGTH; adv > tail; adv--)
-	{
 		snake[adv].ON = 0;
-	}
 
-
-
+  /* Ormen roterar motsols */
 	if(getbtns() == 8)
 	{
-		PORTE += 1;
-
-		if(*is_left)
+    if(*is_left)
 		{
-			go_up();
-			*is_up = 1;
 			*is_left = 0;
+			*is_up = 1;
 		}
+
+    else if(*is_up)
+    {
+      *is_up = 0;
+      *is_right = 1;
+    }
+
+    else if(*is_right)
+    {
+      *is_right = 0;
+      *is_down = 1;
+    }
+
+    else if(*is_down)
+    {
+      *is_down = 0;
+      *is_left = 1;
+    }
 	}
 
-	else if(getbtns() == 4)
+  /* Ormen roterar medsols */
+	if(getbtns() == 4)
 	{
-    PORTE += 1;
 		if(*is_left)
 		{
-			go_down();
 			*is_down = 1;
 			*is_left = 0;
 		}
+
+    else if (*is_down) 
+    {
+      *is_down = 0;
+      *is_right = 1;
+    }
+
+    else if(*is_right)
+    {
+      *is_right = 0;
+      *is_up = 1;
+    }
+
+    else if(*is_up)
+    {
+      *is_up = 0;
+      *is_left = 1;
+    } 
 	}
 
+  /* Beroende på ormens tidigare rutt så fortsätter den sin riktning */
 	if(*is_left)
 		snake[0].x = snake[0].x + 1;
-	if(*is_right)
+	else if(*is_right)
 		snake[0].x = snake[0].x - 1;
-	if(*is_up)
+	else if(*is_up)
 		snake[0].y = snake[0].y - 1;
-	if(*is_down)
+	else if(*is_down)
 		snake[0].y = snake[0].y + 1;
-
 }
 
+/* Ritar ut maten i displayen med hjälp av generatepixel */
 void drawFood()
 {
 	int x;
@@ -103,31 +114,39 @@ void drawFood()
 		y = food[k].y;
 
 		generatePixel(x, y);
+    randi++;
 	}
 }
 
+/* Skapar maten i form av 2x2 pixel */
 void generateFood(){
-	int x = 60;
-	int y = 15;
-	int i;
 
-	food[0].x = x;
-	food[0].y = y;
-	food[1].x = x + 1;
-	food[1].y = y;
-	food[2].x = x;
-	food[2].y = y + 1;
-	food[3].x = x + 1;
-	food[3].y = y + 1;
+  int x,y; 
 
-	for(i = 0; i < 4; i++)
-	{
-		food[i].ON = 1;
+  do{
+  x = (rand() + randi) % 126;
+  y = (rand() + randi) % 30;
+  }while( !(is_validPoint(x,y)) && x > 8 && y > 8);
 
-	}
-	drawFood();
+  	food[0].x = x;
+    food[0].y = y;
+  	food[1].x = x + 1;
+	  food[1].y = y;
+	  food[2].x = x;
+	  food[2].y = y + 1;
+	  food[3].x = x + 1;
+	  food[3].y = y + 1;
+
+    int i;
+	  for(i = 0; i < 4; i++)
+	  {
+	  	food[i].ON = 1;
+      randi++;
+	  }
+	  drawFood();
 }
 
+/* Ritar ut spelplanen i displayen */
 void drawFrame(){
   int i;
   for(i = 0; i < 128; i++){
@@ -147,7 +166,7 @@ void drawFrame(){
   }
 }
 
-
+/* ritar ut ormen i spelet */
 void drawSnake(void)
 {
   int x;
@@ -164,6 +183,7 @@ void drawSnake(void)
   }
  }
 
+/* Får ormen att växa OM ormen äter mat*/
 void expandSnake(void)
 {
   int newbody = tail + 1;
@@ -171,100 +191,40 @@ void expandSnake(void)
   snake[newbody].y = snake[tail].y;
 	snake[newbody].ON = 1;
   drawSnake();
-
   tail++;
 }
 
-void go_up()
-{
-	int u;
-  for(u = SNAKE_LENGTH; u > 0; u--)
-  {
-    snake[u] = snake[u-1];
-  }
-	snake[0].y = snake[1].y;
-	snake[0].x = snake[1].x;
-}
-
-void go_down()
-{
-	int u;
-	for(u = SNAKE_LENGTH; u > 0; u--)
-  {
-    snake[u].x = snake[u-1].x;
-		snake[u].y = snake[u-1].y;
-  }
-	snake[0].y = snake[1].y;
-	snake[0].x = snake[1].x;
-}
-
-
-void go_left(int *is_up, int *is_down)
-{
-	int u;
-	for(u = SNAKE_LENGTH; u > 0; u--)
-  {
-    snake[u].x = snake[u-1].x;
-		snake[u].y = snake[u-1].y;
-  }
-	snake[0].y = snake[1].y;
-	snake[0].x = snake[1].x + 1;
-}
-
-void go_right(int *is_up, int *is_down)
-{
-	int u;
-	for(u = SNAKE_LENGTH; u > 0; u--)
-  {
-    snake[u].x = snake[u-1].x;
-		snake[u].y = snake[u-1].y;
-  }
-	snake[0].y = snake[1].y;
-	snake[0].x = snake[1].x - 1;
-}
-
-
+/* Undersöker om ormen äver en del av maten */
 int eatenFood(void)
 {
   if(snake[0].x == food[0].x && snake[0].y == food[0].y)
-  {
     return 1;
-  }
 
 	if (snake[0].x == food[1].x && snake[0].y == food[1].y)
-	 {
 		return 1;
-	 }
 
 	 if (snake[0].x == food[2].x && snake[0].y == food[2].y)
-	 {
 	 	return 1;
-	 }
 
 	 if (snake[0].x == food[3].x && snake[0].y == food[3].y)
-	  {
-	 	return 1;
-	  }
+	  return 1;
 
-		else
-		{
-			return 0;
-		}
+	 else
+	  return 0;
+
+    randi++;
 }
 
-
+/* Undersöker om ormen kolliderar med väggen eller med sig själv*/
 int isgameover(void)
-{
-		if(snake[0].x == 2 || snake[0].x == 125){
+{ 
+    int i;
+		if(snake[0].x == 2 || snake[0].x == 125 || snake[0].y == 2 || snake[0].y == 29)
 			return 1;
-		}
 
-		if(snake[0].y == 2 || snake[0].y == 29){
-			return 1;
-		}
+		for(i = 3; i <= tail; i++)
+      if(snake[0].x == snake[i].x && snake[0].y == snake[i].y)
+        return 1;
 
-		else
-		{
-			return 0;
-		}
+    return 0; 
 }

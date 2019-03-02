@@ -1,3 +1,5 @@
+//
+
 #include <pic32mx.h>
 #include <stdint.h>
 #include "SnakeHeader.h"
@@ -16,7 +18,6 @@ int *right = &is_right;
 int *up = &is_up;
 int *down = &is_down;
 
-int adv;
 //Fetches the input from the 4 buttons in the i/o shield
 int getbtns(void)
 {
@@ -25,7 +26,8 @@ int getbtns(void)
     return btn;
 }
 
-//initialization of the 4 buttons in the i/o shield
+//initialization of the 4 buttons in the i/o shield.
+//Tagen från filerna i Labb 3
 void labinit( void )
 {
   volatile int* trise = (volatile int*) 0xbf886100;
@@ -47,25 +49,20 @@ void labinit( void )
   return;
 }
 
+//Interrupt Service Routine (Tagen från Labb 3)
 void user_isr( void )
 {
   if (IFS(0) & 0x100)
   {
-    if(gameOver == 0)
-    {
       advanceSnake(left, right, up, down);
   }
-}
-
-  if((IFS(0) & 0x0800))
-  {
-  }
-  PORTE += 1;
+  
   gameOver = isgameover();
   IFS(0) = 0;
   return;
 }
 
+//Startar programmet. 
 int main(void) {
 /* Set up peripheral bus clock */ //PLL output dividerat med 8??
 OSCCON &= ~0x180000;
@@ -100,35 +97,35 @@ SPI2CON |= 0x60;	//D.v.s enheten blir mastern och data utbyte sker vid rising ed
 
 /* Turn on SPI */
 SPI2CONSET = 0x8000;
+//Allt ovanför detta meningen är tagen från hello display i github
 
+/* Instansierar display, interrupts, skapar ny orm och genererar första maten */
 display_init();
 labinit();
 SnakeStart();
 generateFood();
 
-
-sendData();
-
-
-while(1)
+/* Kör spelet, om maten äts så skapas ny mat på slumpmässig koordinat */
+while(gameOver == 0)
 {
-
       cleanSnake();
       drawFrame();
       drawSnake();
       drawFood();
       sendData();
 
-
-      if(eatenFood() == 1)
+			/* generera ny mat, förläng orm och öka antalet poäng */
+      if(eatenFood())
       {
-        clearFood(); // Tar bort maten
         expandSnake();
+				generateFood();
+				PORTE += 1;
       }
 
 }
 
-
+display_string(1, "			GAME OVER			");
+display_update();
 for(;;) ;
 return 0;
 }
