@@ -6,6 +6,7 @@
 void *stdin, *stdout;
 
 /* slumpvalt värde för funktionen rand(), tail räknar ormens totala segment */
+// För att generera slumpmässiga koordinater används
 int randi = 734;
 int tail = 9;
 
@@ -13,7 +14,7 @@ int tail = 9;
 void SnakeStart(){
   int i;
 
-  for(i=0; i < 10; i++){
+  for(i=0; i < (tail + 1); i++){
       snake[i].x = STARTX - i;
       snake[i].y = STARTY;
       snake[i].ON = 1;
@@ -72,7 +73,7 @@ void advanceSnake(int* is_left, int* is_right, int* is_up, int* is_down)
 			*is_left = 0;
 		}
 
-    else if (*is_down) 
+    else if (*is_down)
     {
       *is_down = 0;
       *is_right = 1;
@@ -88,7 +89,7 @@ void advanceSnake(int* is_left, int* is_right, int* is_up, int* is_down)
     {
       *is_up = 0;
       *is_left = 1;
-    } 
+    }
 	}
 
   /* Beroende på ormens tidigare rutt så fortsätter den sin riktning */
@@ -119,9 +120,9 @@ void drawFood()
 }
 
 /* Skapar maten i form av 2x2 pixel */
+//nya slumpmässiga koordinater genereras tills de passar
 void generateFood(){
-
-  int x,y; 
+  int x,y;
 
   do{
   x = (rand() + randi) % 126;
@@ -150,9 +151,8 @@ void generateFood(){
 void drawFrame(){
   int i;
   for(i = 0; i < 128; i++){
-    generatePixel(i, 2);
     generatePixel(i, 1);
-
+    generatePixel(i, 2);
     generatePixel(i, 30);
     generatePixel(i, 31);
   }
@@ -160,9 +160,10 @@ void drawFrame(){
   for(i = 0; i < 32; i++){
     generatePixel(1, i);
 		generatePixel(2, i);
-
     generatePixel(126, i);
     generatePixel(127, i);
+    generatePixel(128, i);
+
   }
 }
 
@@ -203,10 +204,10 @@ int eatenFood(void)
 	if (snake[0].x == food[1].x && snake[0].y == food[1].y)
 		return 1;
 
-	 if (snake[0].x == food[2].x && snake[0].y == food[2].y)
-	 	return 1;
+	if (snake[0].x == food[2].x && snake[0].y == food[2].y)
+	  return 1;
 
-	 if (snake[0].x == food[3].x && snake[0].y == food[3].y)
+	if (snake[0].x == food[3].x && snake[0].y == food[3].y)
 	  return 1;
 
 	 else
@@ -217,14 +218,14 @@ int eatenFood(void)
 
 /* Undersöker om ormen kolliderar med väggen eller med sig själv*/
 int isgameover(void)
-{ 
+{
     int i;
-		if(snake[0].x == 2 || snake[0].x == 125 || snake[0].y == 2 || snake[0].y == 29)
+		if(snake[0].x == 2 || snake[0].x == 126 || snake[0].y == 2 || snake[0].y == 30)
 			return 1;
 
 		for(i = 3; i <= tail; i++)
       if(snake[0].x == snake[i].x && snake[0].y == snake[i].y)
         return 1;
 
-    return 0; 
+    return 0;
 }

@@ -5,20 +5,6 @@
 #include "SnakeHeader.h"
 void *stdin, *stdout;
 
-//Följande defineringar är tagna från "hello display" i github
-#define DISPLAY_VDD_PORT PORTF
-#define DISPLAY_VDD_MASK 0x40
-#define DISPLAY_VBATT_PORT PORTF
-#define DISPLAY_VBATT_MASK 0x20
-#define DISPLAY_COMMAND_DATA_PORT PORTF
-#define DISPLAY_COMMAND_DATA_MASK 0x10
-#define DISPLAY_RESET_PORT PORTG
-#define DISPLAY_RESET_MASK 0x200
-
-//egna defineringar
-#define FOOD_VECTOR_SIZE 4
-#define SNAKEMAP_SIZE 512
-
 void delay(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
@@ -100,7 +86,7 @@ void generatePixel(int x, int y)
 		int range = y % 8; /*Determines which pixel of within the 8 bits are used.*/
 		int row = y / 8;	/*Which out of the 4 rows will the point generate on.*/
 		int des = row*128+x; /*The determined index of the pixel.*/
-		snakeMap[des] = snakeMap[des] | (0x01 << range); /*we shift the value of "range" by 1  so that bits 1-7 can be used properly*/
+		snakeMap[des] = snakeMap[des] | (0x01 << range); /*we shift the value of "range" by 1  so that bits 0-7 can be used properly*/
 	}
 }
 
@@ -113,9 +99,9 @@ void cleanSnake(void){
 	}
 }
 
-//Initializes the display. This 
+//Initializes the display. This
 void display_init() {
-	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //stänger av portf pin 4?
+	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK; //stänger av portf pin 4
 	delay(10);
 	DISPLAY_VDD_PORT &= ~DISPLAY_VDD_MASK; //sätter på ström till logik
 	delay(1000000);
@@ -130,18 +116,18 @@ void display_init() {
 	spi_send_recv(0x14);	//Enable charge pump (ökar strömmen från låg till hög?)
 
 	spi_send_recv(0xD9);	//Set the duration of pre-charge period
-	spi_send_recv(0xF1); 	//??
+	spi_send_recv(0xF1);
 
 	DISPLAY_VBATT_PORT &= ~DISPLAY_VBATT_MASK; //sätter på ström till display
 	delay(10000000);
 
-	spi_send_recv(0xA1);  	 //Set segment remap??
-	spi_send_recv(0xC8); 	 //Set output COM scan direction??
+	spi_send_recv(0xA1);   //Set segment remap
+	spi_send_recv(0xC8); 	 //Set output COM scan direction
 
 	spi_send_recv(0xDA);	 //com pins hardware config (styr displayen somewhat)
 	spi_send_recv(0x20);	 //page addressing mode
 
-	spi_send_recv(0x20);     //??
+	spi_send_recv(0x20);
 	spi_send_recv(0x0);
 
 	spi_send_recv(0xAF); 	 //display ON

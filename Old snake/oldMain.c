@@ -1,24 +1,23 @@
-//Startar programmet
-
 #include <pic32mx.h>
 #include <stdint.h>
 #include "SnakeHeader.h"
+
 void *stdin, *stdout;
  /*int for later in the program*/
 int gameOver = 0;
 
-/*Booleans för deras nurvarande riktning*/
+/*Booleans för deras nurvarande rikning*/
 int is_left = 1;
 int is_right = 0;
 int is_up = 0;
 int is_down = 0;
 
-/*Pointers till booleans */
 int *left = &is_left;
 int *right = &is_right;
 int *up = &is_up;
 int *down = &is_down;
 
+int adv;
 //Fetches the input from the 4 buttons in the i/o shield
 int getbtns(void)
 {
@@ -27,9 +26,7 @@ int getbtns(void)
     return btn;
 }
 
-//initialization of the 4 buttons in the i/o shield,
-// Timer2 and sw2 as interrupts
-//Tagen från filerna i Labb 3
+//initialization of the 4 buttons in the i/o shield
 void labinit( void )
 {
   volatile int* trise = (volatile int*) 0xbf886100;
@@ -46,26 +43,33 @@ void labinit( void )
   IEC(0) = 0x0900; /*Enables interrupt for Timer2 and SW2*/
   IFSCLR(0) = 0x0900; /*Sets the Interrupt flag to 0.*/
 
-  T2CONSET = 0x08000;
   asm volatile("ei");
+  T2CONSET = 0x08000;
+
   return;
 }
 
-//Interrupt Service Routine (Tagen från Labb 3)
 void user_isr( void )
 {
   if (IFS(0) & 0x100)
   {
+    if(gameOver == 0)
+    {
       advanceSnake(left, right, up, down);
   }
+}
 
+  if((IFS(0) & 0x0800))
+  {
+  }
+  PORTE += 1;
   gameOver = isgameover();
   IFS(0) = 0;
   return;
 }
 
-//Startar programmet.
 int main(void) {
+
 /* Set up peripheral bus clock */ //PLL output dividerat med 8??
 OSCCON &= ~0x180000;
 OSCCON |= 0x080000;
@@ -95,20 +99,18 @@ SPI2BRG = 4;					//Baud rate = 4 (Ska dividera SCK)
 /* Clear SPIROV*/
 SPI2STATCLR &= ~0x40;	//Ny data har tagits emot men slängs bort, programmer har ej läst förra datan (liknar IFS(0) )
 /* Set CKP = 1, MSTEN = 1; */
-SPI2CON |= 0x60;	//D.v.s enheten blir mastern och data utbyte sker vid rising edge
+SPI2CON |= 0x60;	//D.v.s eneheten blir mastern och data utbyte sker vid rising edge
 
 /* Turn on SPI */
 SPI2CONSET = 0x8000;
-//Allt ovanför detta meningen är tagen från hello display i github
 
-/* Instansierar display, interrupts, skapar ny orm och genererar första maten */
 display_init();
 labinit();
 SnakeStart();
 generateFood();
+sendData();
 
-/* Kör spelet, om maten äts så skapas ny mat på slumpmässig koordinat */
-while(gameOver == 0)
+while(1)
 {
       cleanSnake();
       drawFrame();
@@ -116,17 +118,15 @@ while(gameOver == 0)
       drawFood();
       sendData();
 
-			/* generera ny mat, förläng orm och öka antalet poäng */
-      if(eatenFood())
+
+      if(eatenFood() == 1)
       {
+        clearFood(); // Tar bort maten
         expandSnake();
-				generateFood();
-				PORTE += 1;
       }
+
 }
 
-display_string(1, "			GAME OVER			");
-display_update();
 for(;;) ;
 return 0;
 }

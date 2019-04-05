@@ -34,9 +34,8 @@ void delay(int cyc);
 void display_string(int line, char *s);
 void display_update();
 void enable_interrupt();
-uint8_t spi_send_recv(uint8_t data);
 
-//each segment of the snake represents an pixel that is on 
+//each segment of the snake represents an pixel that is on
 //inspired by https://github.com/GioTro/Snake-for-uno32-devBoard/blob/master/Project/header.h
 typedef struct {
     int x;
